@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Семенов](https://up.htmlacademy.ru/ecmascript/9/user/416777).
-* Наставник: [`---`].
+* Наставник: [``].
 
 ---
 
