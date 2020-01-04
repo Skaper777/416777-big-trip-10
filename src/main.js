@@ -14,6 +14,9 @@ const tripContainer = document.querySelector(`.trip-events`);
 const priceContainer = document.querySelector(`.trip-info__cost-value`);
 const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
 
+const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+
 const renderTripInfo = () => {
   const tripInfo = new TripInfo();
 
