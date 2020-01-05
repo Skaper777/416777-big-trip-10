@@ -2,49 +2,6 @@ import {
   getRandomValue
 } from './utils';
 
-export const types = [
-  {
-    name: `taxi`,
-    type: `transport`
-  },
-  {
-    name: `bus`,
-    type: `transport`
-  },
-  {
-    name: `train`,
-    type: `transport`
-  },
-  {
-    name: `ship`,
-    type: `transport`
-  },
-  {
-    name: `transport`,
-    type: `transport`
-  },
-  {
-    name: `drive`,
-    type: `transport`
-  },
-  {
-    name: `flight`,
-    type: `transport`
-  },
-  {
-    name: `check-in`,
-    type: `place`
-  },
-  {
-    name: `sightseeing`,
-    type: `place`
-  },
-  {
-    name: `restaurant`,
-    type: `place`
-  }
-];
-
 export const getPhoto = () => {
   return `http://picsum.photos/300/150?r=${Math.random()}`;
 };
@@ -83,7 +40,6 @@ export const offersList = [
 ];
 
 export const getEvent = () => ({
-  type: types[Math.floor(Math.random() * 10)],
 
   destination: [
     `Saint-Petersburg`,

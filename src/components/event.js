@@ -72,11 +72,11 @@ export class Point extends AbstractComponent {
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
       ${
-  this._offers.map((arr) => arr.check ?
-    `<li class="event__offer"><span class="event__offer-title">${arr.type}</span>
+  this._offers.map((arr) =>
+    `<li class="event__offer"><span class="event__offer-title">${arr.title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${arr.price}</span>
-      </li>` : ``).join(``)}
+      </li>`).join(``)}
 
       </ul>
 

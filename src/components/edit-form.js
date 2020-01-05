@@ -178,9 +178,9 @@ export class EditEvent extends AbstractComponent {
         <div class="event__available-offers">
         ${this._offers.map((item) =>
     `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.name}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-${item.name}-1">
-              <span class="event__offer-title">${item.type}</span>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.title}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
+            <label class="event__offer-label" for="event-offer-${item.title}-1">
+              <span class="event__offer-title">${item.title}</span>
               &plus;
               &euro;&nbsp;<span class="event__offer-price">${item.price}</span>
             </label>
@@ -190,15 +190,11 @@ export class EditEvent extends AbstractComponent {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${this._description.slice(0, Math.ceil(Math.random() * 3))}</p>
+        <p class="event__destination-description">${this._description}</p>
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            <img class="event__photo" src="${this._photo}" alt="Event photo">
-            <img class="event__photo" src="${this._photo}" alt="Event photo">
-            <img class="event__photo" src="${this._photo}" alt="Event photo">
-            <img class="event__photo" src="${this._photo}" alt="Event photo">
-            <img class="event__photo" src="${this._photo}" alt="Event photo">
+            ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`)}
           </div>
         </div>
       </section>

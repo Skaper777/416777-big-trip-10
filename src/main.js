@@ -4,18 +4,21 @@ import {Filters} from './components/filters';
 import {TotalPrice} from './components/total-price';
 import {getMenu} from './data';
 import {render, position} from './utils';
-import {events} from './components/points';
+// import {events} from './components/points';
 import {TripController} from './controllers/trip-controller';
 import {Stats} from './components/stats';
+import {API} from './api.js';
+
+const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+
+const api = new API(END_POINT, AUTHORIZATION);
 
 const infoContainer = document.querySelector(`.trip-main__trip-info`);
 const menuContainer = document.querySelector(`.trip-main__trip-controls`);
 const tripContainer = document.querySelector(`.trip-events`);
 const priceContainer = document.querySelector(`.trip-info__cost-value`);
 const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
-
-const AUTHORIZATION = `Basic eo0w590ik29889a`;
-const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
 
 const renderTripInfo = () => {
   const tripInfo = new TripInfo();
@@ -83,22 +86,28 @@ const renderFilters = () => {
   render(menuContainer, filters.getElement(), position.BEFOREEND);
 };
 
-const tripController = new TripController(tripContainer, events);
+let tripController;
 
-tripController.init();
+api.getOffers()
+  .then((offers) => console.log(offers));
+
+api.getPoints()
+  .then((points) => {
+    tripController = new TripController(tripContainer, points);
+    tripController.init();
+
+    const statsGraph = new Stats(points);
+    statsGraph.init();
+
+    const events = document.querySelectorAll(`.event`);
+
+    if (events.length > 0) {
+      renderTripInfo();
+      renderTotalPrice();
+    }
+
+    tripController.filterEvents();
+  });
 
 renderMenu(getMenu());
 renderFilters();
-
-const points = document.querySelectorAll(`.event`);
-
-if (points.length > 0) {
-  renderTripInfo();
-  renderTotalPrice();
-}
-
-const statsGraph = new Stats(events);
-
-statsGraph.init();
-
-tripController.filterEvents();

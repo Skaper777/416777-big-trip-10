@@ -1,6 +1,6 @@
 export class ModelOffer {
   constructor(data) {
-    this.type.name = data.type;
+    this.type = data.type;
     this.offers = data.offers.map((offer) => {
       return {
         name: offer.title,

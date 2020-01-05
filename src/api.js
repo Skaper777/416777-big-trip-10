@@ -1,6 +1,6 @@
-import ModelDest from '../models/model-destination';
-import ModelPoint from '../models/model-point';
-import ModelOffer from '../models/model-offer';
+import {ModelDest} from './models/model-destination';
+import {ModelPoint} from './models/model-point';
+import {ModelOffer} from './models/model-offer';
 
 const METHOD = {
   GET: `GET`,
@@ -22,7 +22,7 @@ const toJSON = (response) => {
 };
 
 export class API {
-  constructor({endPoint, authorization}) {
+  constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
   }
