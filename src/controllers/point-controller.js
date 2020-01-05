@@ -145,15 +145,13 @@ export class PointController {
           price: formData.get(`event-price`),
           offers: offersDom.map((item) => (
             {
-              name: item.querySelector(`.event__offer-checkbox`).name,
-              type: item.querySelector(`.event__offer-title`).textContent,
+              title: item.querySelector(`.event__offer-title`).textContent,
               price: item.querySelector(`.event__offer-price`).textContent,
               check: item.querySelector(`.event__offer-checkbox`).checked
             }
           )),
-          photo: getPhoto(),
-          description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`.split(`. `).sort(() => 0.5 - Math.random()),
-
+          photo: Array.from(document.querySelectorAll(`.event__photo`)).map((img) => img),
+          description: document.querySelector(`.event__destination-description`).textContent
         };
 
         this._onDataChange(entry, mode === Mode.DEFAULT ? this._data : null);

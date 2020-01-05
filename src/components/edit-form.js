@@ -178,7 +178,7 @@ export class EditEvent extends AbstractComponent {
         <div class="event__available-offers">
         ${this._offers.map((item) =>
     `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.title}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.title}-1" type="checkbox" name="${item.title}" ${item.check ? `checked` : ``}>
             <label class="event__offer-label" for="event-offer-${item.title}-1">
               <span class="event__offer-title">${item.title}</span>
               &plus;
@@ -194,7 +194,7 @@ export class EditEvent extends AbstractComponent {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`)}
+            ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``)}
           </div>
         </div>
       </section>

@@ -88,8 +88,10 @@ const renderFilters = () => {
 
 let tripController;
 
-api.getOffers()
-  .then((offers) => console.log(offers));
+const offs = api.getOffers();
+const pnts = api.getPoints();
+
+Promise.all([offs, pnts]).then((res) => console.log(res));
 
 api.getPoints()
   .then((points) => {
