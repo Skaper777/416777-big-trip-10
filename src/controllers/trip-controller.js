@@ -5,19 +5,21 @@ import {render, position, Mode} from '../utils';
 import {EventsList} from '../components/events-list';
 import {PointController} from './point-controller';
 import {EventMessage} from '../components/event-message';
-import {types, offersList, getPhoto} from '../data';
+import {types, getPhoto} from '../data';
 import moment from 'moment';
 
 const PointControllerMode = Mode;
 
 export class TripController {
-  constructor(container, events) {
+  constructor(container, events, store, api) {
     this._container = container;
     this._events = events;
     this._sort = new Sort();
     this._tripDays = new TripDays();
     this._day = new Day();
     this._eventsList = new EventsList();
+    this._store = store;
+    this._api = api;
 
     this._creatingEvent = null;
 
@@ -75,7 +77,7 @@ export class TripController {
         }
       },
       price: 0,
-      offers: offersList,
+      offers: this.offersList,
       photo: getPhoto(),
       description: ``,
     };
@@ -94,17 +96,22 @@ export class TripController {
     const index = this._events.findIndex((mock) => mock === oldData);
 
     if (newData === null) {
-      if (oldData === null) {
-        this._creatingEvent = null;
+      if (oldData === null) { // если открыт новый ивент
+        this._creatingEvent = null; // удаляется пустая форма
       } else {
-        this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)];
+        this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)]; // удаление старого ивента
       }
     } else {
-      if (oldData === null) {
+      if (oldData === null) { // создание нового ивента
         this._creatingEvent = null;
         this._events = [newData, ...this._events];
-      } else {
-        this._events[index] = newData;
+      } else { // редактирование старого ивента
+        this._api.updatePoint(oldData.id, newData)
+          .then((point) => {
+            console.log(point)
+            this._events[index] = point;
+            this._renderEvents(this._events);
+          });
       }
     }
 
@@ -123,7 +130,8 @@ export class TripController {
   }
 
   _renderEvent(eventMock) {
-    const pointController = new PointController(this._eventsList, eventMock, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
+    const pointController = new PointController(this._eventsList, eventMock, this._store, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
+
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
 
@@ -132,7 +140,7 @@ export class TripController {
 
     switch (evt.target.dataset.sortType) {
       case `time`:
-        const sortedByTime = this._events.slice().sort((a, b) => (moment(a.time.timeOut).format(`x`)) - (moment(a.time.timeIn).format(`x`)) - (moment(b.time.timeOut).format(`x`)) - (moment(b.time.timeIn).format(`x`)));
+        const sortedByTime = this._events.slice().sort((a, b) => (moment(a.dateTo).format(`x`)) - (moment(a.dateFrom).format(`x`)) - (moment(b.dateIn).format(`x`)) - (moment(b.dateFrom).format(`x`)));
         sortedByTime.forEach((mock) => this._renderEvent(mock));
         break;
 
@@ -165,12 +173,12 @@ export class TripController {
         break;
 
       case `Future`:
-        const filteredByFuture = this._events.slice().filter((item) => moment(item.time.timeIn).format(`x`) > now);
+        const filteredByFuture = this._events.slice().filter((item) => moment(item.dateFrom).format(`x`) > now);
         filteredByFuture.forEach((mock) => this._renderEvent(mock));
         break;
 
       case `Past`:
-        const filteredByPast = this._events.slice().filter((item) => now > moment(item.time.timeIn).format(`x`));
+        const filteredByPast = this._events.slice().filter((item) => now > moment(item.dateFrom).format(`x`));
         filteredByPast.forEach((mock) => this._renderEvent(mock));
         break;
     }

@@ -1,30 +1,13 @@
 export class ModelPoint {
   constructor(data) {
     this.id = data.id;
-    this.type = {
-      name: data.type,
-      type: ``
-    };
+    this.type = data.type;
+    this.typeOfType = ``;
     this.destination = data.destination.name;
     this.description = data.destination.description;
     this.photo = data.destination.pictures;
-    this.time = {
-      timeIn: new Date(data.date_from),
-      timeOut: new Date(data.date_to),
-      durationHours: ``,
-      durationMinutes: ``,
-
-      getDurationHours() {
-        let time = this.timeOut - this.timeIn;
-        this.durationHours = Math.floor(time / 3600000);
-        this.durationMinutes = Math.floor((time / 60000) - this.durationHours * 60);
-        return this.durationHours;
-      },
-
-      getDurationMinutes() {
-        return this.durationMinutes;
-      }
-    };
+    this.dateFrom = new Date(data.date_from);
+    this.dateTo = new Date(data.date_to);
     this.price = data.base_price;
     this.offers = data.offers;
     this.isFavorite = data.is_favorite;
@@ -32,15 +15,28 @@ export class ModelPoint {
     this._getTransport();
   }
 
+  toRAW() {
+    return {
+      'id': this.id,
+      'base_price': this.price,
+      'date_from': this.dateFrom,
+      'date_to': this.dateTo,
+      'destination': this.destination,
+      'is_favorite': this.isFavorite,
+      'offers': this.offers,
+      'type': this.type
+    };
+  }
+
   _getTransport() {
-    if (this.type.name === `taxi` ||
-        this.type.name === `bus` ||
-        this.type.name === `train` ||
-        this.type.name === `ship` ||
-        this.type.name === `transport` ||
-        this.type.name === `drive` ||
-        this.type.name === `flight`) {
-      this.type.type = `transport`;
+    if (this.type === `taxi` ||
+        this.type === `bus` ||
+        this.type === `train` ||
+        this.type === `ship` ||
+        this.type === `transport` ||
+        this.type === `drive` ||
+        this.type === `flight`) {
+      this.typeOfType = `transport`;
     }
 
     return ``;
@@ -52,5 +48,9 @@ export class ModelPoint {
 
   static parsePoints(data) {
     return data.map(ModelPoint.parsePoint);
+  }
+
+  static clone(data) {
+    return new ModelPoint(data.toRAW());
   }
 }

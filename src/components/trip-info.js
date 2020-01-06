@@ -1,44 +1,44 @@
-import {events} from './points';
 import {AbstractComponent} from './abstract';
 
 export class TripInfo extends AbstractComponent {
-  constructor() {
+  constructor(events) {
     super();
+    this._events = events;
   }
 
   getTemplate() {
     return `<div class="trip-info__main">
-      <h1 class="trip-info__title">${getTripCities(events)}</h1>
+      <h1 class="trip-info__title">${this._getTripCities(this._events)}</h1>
 
-      <p class="trip-info__dates">${getTripDate()}</p>
+      <p class="trip-info__dates">${this._getTripDate()}</p>
     </div>
     `;
   }
-}
 
-const formatInfo = (arr) => {
-  return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);
-};
-
-const getTripCities = (arr) => {
-  let cities = [];
-
-  for (let el of arr) {
-    let city = el.destination;
-    cities.push(city);
+  _getTripDate() {
+    let days = [];
+    let date = this._events[0].dateFrom;
+    let day = new Date(date).toString().split(` `);
+    let newDay = [day[1], day[2]].join(` `);
+    days.push(newDay);
+    let stringList = this._formatInfo(days);
+    return stringList;
   }
 
-  let stringList = formatInfo(cities);
+  _formatInfo(arr) {
+    return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);
+  }
 
-  return stringList;
-};
+  _getTripCities(arr) {
+    let cities = [];
 
-const getTripDate = () => {
-  let days = [];
-  let date = events[0].time.timeIn;
-  let day = new Date(date).toString().split(` `);
-  let newDay = [day[1], day[2]].join(` `);
-  days.push(newDay);
-  let stringList = formatInfo(days);
-  return stringList;
-};
+    for (let el of arr) {
+      let city = el.destination;
+      cities.push(city);
+    }
+
+    let stringList = this._formatInfo(cities);
+
+    return stringList;
+  }
+}

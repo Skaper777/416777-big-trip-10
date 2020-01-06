@@ -1,18 +1,20 @@
 import {AbstractComponent} from './abstract';
 import moment from 'moment';
+import {getDuration} from '../utils'
 
 export class Point extends AbstractComponent {
-  constructor({type, destination, time, price, offers}) {
+  constructor({type, destination, dateFrom, dateTo, price, offers}) {
     super();
     this._type = type;
     this._destination = destination;
-    this._time = time;
+    this._dateFrom = dateFrom;
+    this._dateTo = dateTo;
     this._price = price;
     this._offers = offers;
   }
 
   _getTitle() {
-    switch (this._type.name) {
+    switch (this._type) {
       case `taxi`:
         return `Taxi to`;
 
@@ -52,17 +54,17 @@ export class Point extends AbstractComponent {
     return `<li class="trip-events__item">
     <div class="event">
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${this._type.name}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${this._type}.png" alt="Event type icon">
       </div>
       <h3 class="event__title">${this._getTitle()} ${this._destination}</h3>
 
       <div class="event__schedule">
         <p class="event__time">
-          <time class="event__start-time" datetime="2019-03-18T10:30">${moment(this._time.timeIn).format(`hh:mm`)}</time>
+          <time class="event__start-time" datetime="2019-03-18T10:30">${moment(this._dateFrom).format(`hh:mm`)}</time>
           &mdash;
-          <time class="event__end-time" datetime="2019-03-18T11:00">${moment(this._time.timeOut).format(`hh:mm`)}</time>
+          <time class="event__end-time" datetime="2019-03-18T11:00">${moment(this._dateTo).format(`hh:mm`)}</time>
         </p>
-        <p class="event__duration">${this._time.getDurationHours()}H ${this._time.getDurationMinutes()}M</p>
+        <p class="event__duration">${getDuration(this._dateFrom, this._dateTo)}</p>
       </div>
 
       <p class="event__price">

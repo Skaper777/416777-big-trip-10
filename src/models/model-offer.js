@@ -4,9 +4,8 @@ export class ModelOffer {
     this.offers = data.offers.map((offer) => {
       return {
         name: offer.title,
-        type: offer.type,
         price: offer.price,
-        check: offer.accepted,
+        check: false,
       };
     });
   }

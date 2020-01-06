@@ -1,8 +1,9 @@
 import {renderTotalPrice} from "../utils";
 
 export class TotalPrice {
-  constructor() {
-    this._price = renderTotalPrice();
+  constructor(events) {
+    this._events = events;
+    this._price = renderTotalPrice(events);
   }
 
   getElement() {

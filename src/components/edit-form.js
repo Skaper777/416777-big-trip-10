@@ -2,19 +2,25 @@ import {AbstractComponent} from './abstract';
 import moment from 'moment';
 
 export class EditEvent extends AbstractComponent {
-  constructor({type, destination, time, price, offers, description, photo}) {
+  constructor({type, destination, dateFrom, dateTo, price, offers, description, photo}, store) {
     super();
     this._type = type;
     this._destination = destination;
-    this._time = time;
+    this._dateFrom = dateFrom;
+    this._dateTo = dateTo;
     this._price = price;
     this._offers = offers;
     this._description = description;
     this._photo = photo;
+
+    this._offersList = store.getOffers();
+    this._destinations = store.getDestinations();
+
+    this._currentOffers = this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
   }
 
   _getTitle() {
-    switch (this._type.name) {
+    switch (this._type) {
       case `taxi`:
         return `Taxi to`;
 
@@ -57,7 +63,7 @@ export class EditEvent extends AbstractComponent {
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-1">
           <span class="visually-hidden">Choose event type</span>
-          <img class="event__type-icon" width="17" height="17" src="img/icons/${this._type.name}.png" alt="Event type icon">
+          <img class="event__type-icon" width="17" height="17" src="img/icons/${this._type}.png" alt="Event type icon">
         </label>
         <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -128,9 +134,7 @@ export class EditEvent extends AbstractComponent {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination}" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          ${this._destinations.map((dest) => `<option value="${dest.name}"></option>`).join(``)}
         </datalist>
       </div>
 
@@ -138,12 +142,12 @@ export class EditEvent extends AbstractComponent {
         <label class="visually-hidden" for="event-start-time-1">
           From
         </label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${moment(this._time.timeIn).format(`DD/MM/YY hh:mm`)}">
+        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${moment(this._dateFrom).format(`DD/MM/YY hh:mm`)}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-1">
           To
         </label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${moment(this._time.timeOut).format(`DD/MM/YY hh:mm`)}">
+        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${moment(this._dateTo).format(`DD/MM/YY hh:mm`)}">
       </div>
 
       <div class="event__field-group  event__field-group--price">
@@ -176,11 +180,11 @@ export class EditEvent extends AbstractComponent {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
-        ${this._offers.map((item) =>
+        ${this._currentOffers.map((item) =>
     `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.title}-1" type="checkbox" name="${item.title}" ${item.check ? `checked` : ``}>
-            <label class="event__offer-label" for="event-offer-${item.title}-1">
-              <span class="event__offer-title">${item.title}</span>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.name}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
+            <label class="event__offer-label" for="event-offer-${item.name}-1">
+              <span class="event__offer-title">${item.name}</span>
               &plus;
               &euro;&nbsp;<span class="event__offer-price">${item.price}</span>
             </label>

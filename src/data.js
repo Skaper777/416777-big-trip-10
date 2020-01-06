@@ -6,6 +6,29 @@ export const getPhoto = () => {
   return `http://picsum.photos/300/150?r=${Math.random()}`;
 };
 
+export class Store {
+  constructor() {
+    this._destinations = [];
+    this._offers = [];
+  }
+
+  getDestinations() {
+    return this._destinations;
+  }
+
+  getOffers() {
+    return this._offers.map((el) => [el.type, el.offers]);
+  }
+
+  setDestinations(data) {
+    this._destinations = data;
+  }
+
+  setOffers(data) {
+    this._offers = data;
+  }
+}
+
 export const offersList = [
   {
     name: `event-offer-luggage`,
@@ -70,8 +93,6 @@ export const getEvent = () => ({
       return this.durationMinutes;
     }
   },
-
-  price: getRandomValue(10, 200),
 
   offers: offersList
 });

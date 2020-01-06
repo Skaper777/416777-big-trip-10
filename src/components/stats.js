@@ -20,7 +20,7 @@ export class Stats extends AbstractComponent {
 
   _getMoneyData() {
     const data = this._events.reduce((obj, {type, price}) => {
-      const name = type.name;
+      const name = type;
       const prevProp = obj[name] || 0;
       obj[name] = prevProp + price;
 
@@ -31,9 +31,9 @@ export class Stats extends AbstractComponent {
   }
 
   _getTransportData() {
-    const data = this._events.reduce((obj, {type}) => {
-      if (type.type === `transport`) {
-        const transport = type.name;
+    const data = this._events.reduce((obj, {type, typeOfType}) => {
+      if (typeOfType === `transport`) {
+        const transport = type;
         const prevProp = obj[transport] || 0;
         obj[transport] = prevProp + 1;
 
@@ -47,9 +47,13 @@ export class Stats extends AbstractComponent {
   }
 
   _getTimeData() {
-    const data = this._events.reduce((obj, {destination, time}) => {
+    const data = this._events.reduce((obj, {destination, dateFrom, dateTo}) => {
       const dest = destination;
-      const hours = time.durationHours;
+      const getDurationHours = () => {
+        let time = dateTo - dateFrom;
+        return Math.floor(time / 3600000);
+      };
+      const hours = getDurationHours();
 
       obj[dest] = hours;
 

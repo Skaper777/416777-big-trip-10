@@ -4,14 +4,16 @@ import {Filters} from './components/filters';
 import {TotalPrice} from './components/total-price';
 import {getMenu} from './data';
 import {render, position} from './utils';
-// import {events} from './components/points';
+
 import {TripController} from './controllers/trip-controller';
 import {Stats} from './components/stats';
 import {API} from './api.js';
+import {Store} from './data';
 
 const AUTHORIZATION = `Basic eo0w590ik29889a`;
-const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip/`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 
+const store = new Store();
 const api = new API(END_POINT, AUTHORIZATION);
 
 const infoContainer = document.querySelector(`.trip-main__trip-info`);
@@ -19,19 +21,6 @@ const menuContainer = document.querySelector(`.trip-main__trip-controls`);
 const tripContainer = document.querySelector(`.trip-events`);
 const priceContainer = document.querySelector(`.trip-info__cost-value`);
 const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
-
-const renderTripInfo = () => {
-  const tripInfo = new TripInfo();
-
-  render(infoContainer, tripInfo.getElement(), position.AFTERBEGIN);
-};
-
-const renderTotalPrice = () => {
-  const price = new TotalPrice();
-  priceContainer.innerHTML = ``;
-
-  render(priceContainer, price.getElement(), position.AFTERBEGIN);
-};
 
 const stats = new Stats();
 
@@ -90,26 +79,43 @@ let tripController;
 
 const offs = api.getOffers();
 const pnts = api.getPoints();
+const dstns = api.getDestinations();
 
-Promise.all([offs, pnts]).then((res) => console.log(res));
+Promise.all([offs, pnts, dstns]).then((res) => {
+  const [offers, points, destinations] = res;
 
-api.getPoints()
-  .then((points) => {
-    tripController = new TripController(tripContainer, points);
-    tripController.init();
+  const renderTripInfo = () => {
+    const tripInfo = new TripInfo(points);
 
-    const statsGraph = new Stats(points);
-    statsGraph.init();
+    render(infoContainer, tripInfo.getElement(), position.AFTERBEGIN);
+  };
 
-    const events = document.querySelectorAll(`.event`);
+  const renderTotalPrice = () => {
+    const price = new TotalPrice(points);
+    priceContainer.innerHTML = ``;
 
-    if (events.length > 0) {
-      renderTripInfo();
-      renderTotalPrice();
-    }
+    render(priceContainer, price.getElement(), position.AFTERBEGIN);
+  };
 
-    tripController.filterEvents();
-  });
+  store.setDestinations(destinations);
+  store.setOffers(offers);
+
+  tripController = new TripController(tripContainer, points, store, api);
+  tripController.init();
+
+  const statsGraph = new Stats(points);
+  statsGraph.init();
+
+  const events = document.querySelectorAll(`.event`);
+
+  if (events.length > 0) {
+    renderTripInfo();
+    renderTotalPrice();
+  }
+
+  tripController.filterEvents();
+});
+
 
 renderMenu(getMenu());
 renderFilters();
