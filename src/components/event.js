@@ -1,6 +1,6 @@
 import {AbstractComponent} from './abstract';
 import moment from 'moment';
-import {getDuration} from '../utils'
+import {getDuration} from '../utils';
 
 export class Point extends AbstractComponent {
   constructor({type, destination, dateFrom, dateTo, price, offers}) {

@@ -27,7 +27,8 @@ export class TripInfo extends AbstractComponent {
     days.push([lastDay[1], lastDay[2]].join(` `));
 
     let stringList = this._formatInfo(days);
-    return stringList;  }
+    return stringList;
+  }
 
   _formatInfo(arr) {
     return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);
