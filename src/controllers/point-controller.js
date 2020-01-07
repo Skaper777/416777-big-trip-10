@@ -120,21 +120,19 @@ export class PointController {
         const formData = new FormData(this._editForm.getElement().querySelector(`.event--edit`));
         const offersDom = Array.from(this._editForm.getElement().querySelectorAll(`.event__offer-selector`));
 
-        const destination = {
-          name: formData.get(`event-destination`),
-          description: document.querySelector(`.event__destination-description`).textContent,
-          pictures: [...document.querySelectorAll(`.event__photo`)].map((el) => {
-            return {src: el.src, description: el.alt};
-          })
-        };
-
         const entry = {
           'type': formData.get(`event-type`),
-          'destination': destination,
+          'destination': {
+            name: formData.get(`event-destination`),
+            description: document.querySelector(`.event__destination-description`).textContent,
+            pictures: [...document.querySelectorAll(`.event__photo`)].map((el) => {
+              return {src: el.src, description: el.alt};
+            })
+          },
           'date_from': formData.get(`event-start-time`),
           'date_to': formData.get(`event-end-time`),
           'base_price': +formData.get(`event-price`),
-          'offers': offersDom.map((item) => (
+          'offers': offersDom.filter((item) => item.querySelector(`.event__offer-checkbox`).checked).map((item) => (
             {
               title: item.querySelector(`.event__offer-title`).textContent,
               price: +item.querySelector(`.event__offer-price`).textContent

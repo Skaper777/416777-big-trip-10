@@ -78,7 +78,7 @@ export class Point extends AbstractComponent {
     `<li class="event__offer"><span class="event__offer-title">${arr.title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${arr.price}</span>
-      </li>`).join(``)}
+      </li>`).slice(0, 3).join(``)}
 
       </ul>
 

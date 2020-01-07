@@ -51,7 +51,8 @@ export class API {
       body: JSON.stringify(data),
       headers: new Headers({'Content-Type': `application/json`})
     })
-      .then(toJSON);
+      .then(toJSON)
+      .then(ModelPoint.parsePoint);
   }
 
   deletePoint({id}) {

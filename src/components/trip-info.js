@@ -17,13 +17,17 @@ export class TripInfo extends AbstractComponent {
 
   _getTripDate() {
     let days = [];
-    let date = this._events[0].dateFrom;
-    let day = new Date(date).toString().split(` `);
-    let newDay = [day[1], day[2]].join(` `);
-    days.push(newDay);
+    let firstDate = this._events[0].dateFrom;
+    let lastDate = this._events[this._events.length - 1].dateTo;
+
+    let firstDay = new Date(firstDate).toString().split(` `);
+    days.push([firstDay[1], firstDay[2]].join(` `));
+
+    let lastDay = new Date(lastDate).toString().split(` `);
+    days.push([lastDay[1], lastDay[2]].join(` `));
+
     let stringList = this._formatInfo(days);
-    return stringList;
-  }
+    return stringList;  }
 
   _formatInfo(arr) {
     return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);

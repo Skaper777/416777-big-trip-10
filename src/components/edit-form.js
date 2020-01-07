@@ -176,7 +176,7 @@ export class EditEvent extends AbstractComponent {
 
     <section class="event__details">
 
-      <section class="event__section  event__section--offers">
+    ${ this._currentOffers.length ? `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
         <div class="event__available-offers">
@@ -190,9 +190,9 @@ export class EditEvent extends AbstractComponent {
             </label>
           </div>`).join(``)}
         </div>
-      </section>
+      </section>` : ``}
 
-      <section class="event__section  event__section--destination">
+      ${this._description ? `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${this._description}</p>
 
@@ -201,7 +201,7 @@ export class EditEvent extends AbstractComponent {
             ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``)}
           </div>
         </div>
-      </section>
+      </section>` : `` }
     </section>
   </form>
 </li>

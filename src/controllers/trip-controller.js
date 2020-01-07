@@ -108,14 +108,11 @@ export class TripController {
       } else { // редактирование старого ивента
         this._api.updatePoint(oldData.id, newData)
           .then((point) => {
-            console.log(point)
             this._events[index] = point;
             this._renderEvents(this._events);
           });
       }
     }
-
-    this._renderEvents(this._events);
   }
 
   _onChangeView() {

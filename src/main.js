@@ -83,7 +83,6 @@ const dstns = api.getDestinations();
 
 Promise.all([offs, pnts, dstns]).then((res) => {
   const [offers, points, destinations] = res;
-
   const renderTripInfo = () => {
     const tripInfo = new TripInfo(points);
 

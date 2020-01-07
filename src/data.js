@@ -1,7 +1,3 @@
-import {
-  getRandomValue
-} from './utils';
-
 export const getPhoto = () => {
   return `http://picsum.photos/300/150?r=${Math.random()}`;
 };
