@@ -58,31 +58,23 @@ export class TripController {
     }
 
     const defaultEvent = {
-      type: types[0],
-      destination: ``,
-      time: {
-        timeIn: new Date(),
-        timeOut: new Date(),
-        durationHours: ``,
-        durationMinutes: ``,
-        getDurationHours() {
-          let time = this.timeOut - this.timeIn;
-          this.durationHours = Math.floor(time / 3600000);
-          this.durationMinutes = Math.floor((time / 60000) - this.durationHours * 60);
-          return this.durationHours;
-        },
-
-        getDurationMinutes() {
-          return this.durationMinutes;
-        }
+      type: `taxi`,
+      destination: {
+        name: ``,
+        description: ``,
+        pictures: [{
+          src: ``,
+          description: ``
+        }]
       },
+      dateFrom: new Date(),
+      dateTo: new Date(),
       price: 0,
-      offers: this.offersList,
-      photo: getPhoto(),
-      description: ``,
+      offers: [],
+      isFavorite: false
     };
 
-    this._creatingEvent = new PointController(this._eventsList, defaultEvent, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
+    this._creatingEvent = new PointController(this._eventsList, defaultEvent, this._store, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
   }
 
   _renderEvents(events) {
@@ -99,12 +91,21 @@ export class TripController {
       if (oldData === null) { // если открыт новый ивент
         this._creatingEvent = null; // удаляется пустая форма
       } else {
-        this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)]; // удаление старого ивента
+        this._api.deletePoint(oldData.id)
+          .then(() => {
+            this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)]; // удаление старого ивента
+            this._renderEvents(this._events);
+          });
       }
     } else {
       if (oldData === null) { // создание нового ивента
-        this._creatingEvent = null;
-        this._events = [newData, ...this._events];
+        this._api.createPoint(newData)
+          .then((data) => {
+            this._creatingEvent = null;
+            this._events = [data, ...this._events];
+            this._renderEvents(this._events);
+          });
+
       } else { // редактирование старого ивента
         this._api.updatePoint(oldData.id, newData)
           .then((point) => {

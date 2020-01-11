@@ -3,9 +3,7 @@ export class ModelPoint {
     this.id = data.id;
     this.type = data.type;
     this.typeOfType = ``;
-    this.destination = data.destination.name;
-    this.description = data.destination.description;
-    this.photo = data.destination.pictures;
+    this.destination = data.destination;
     this.dateFrom = new Date(data.date_from);
     this.dateTo = new Date(data.date_to);
     this.price = data.base_price;

@@ -16,9 +16,11 @@ export class PointController {
     this._store = store;
     this._point = new Point(data);
     this._editForm = new EditEvent(data, store);
+    this._destinations = store.getDestinations();
 
     this.init(mode);
     this._onTypeHandler();
+    this._onDestHandler();
   }
 
   _onTypeHandler() {
@@ -38,6 +40,18 @@ export class PointController {
         }
       });
     }
+  }
+
+  _onDestHandler() {
+    const el = this._editForm.getElement().querySelector(`.event__input--destination`);
+
+    el.addEventListener(`change`, (e) => {
+      let targ = this._destinations.find((it) => it.name === e.target.value);
+
+      this._editForm.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
+      this._editForm.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
+
+    });
   }
 
   _renderEventMessage() {
@@ -138,8 +152,6 @@ export class PointController {
               price: +item.querySelector(`.event__offer-price`).textContent
             }
           )),
-          'photo': Array.from(document.querySelectorAll(`.event__photo`)).map((img) => img),
-          'description': document.querySelector(`.event__destination-description`).textContent,
           'is_favorite': false
         };
 

@@ -1,8 +1,8 @@
-import {AbstractComponent} from './abstract';
+import {AbstractComponent} from './abstract.js';
 import moment from 'moment';
 
 export class EditEvent extends AbstractComponent {
-  constructor({type, destination, dateFrom, dateTo, price, offers, description, photo}, store) {
+  constructor({type, destination, dateFrom, dateTo, price, offers}, store) {
     super();
     this._type = type;
     this._destination = destination;
@@ -10,13 +10,15 @@ export class EditEvent extends AbstractComponent {
     this._dateTo = dateTo;
     this._price = price;
     this._offers = offers;
-    this._description = description;
-    this._photo = photo;
+    this._description = destination.description;
+    this._photo = destination.pictures;
 
     this._offersList = store.getOffers();
     this._destinations = store.getDestinations();
 
     this._currentOffers = this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
+
+    //this._subscribeOnEvents();
   }
 
   _getTitle() {
@@ -46,7 +48,7 @@ export class EditEvent extends AbstractComponent {
         return `Check-in in`;
 
       case `sightseeing`:
-        return `Sightseeing in`;
+        return `Sightseeing at`;
 
       case `restaurant`:
         return `Restaurant in`;
@@ -55,6 +57,18 @@ export class EditEvent extends AbstractComponent {
         return ``;
     }
   }
+
+  /*_subscribeOnEvents() {
+    const el = this.getElement();
+
+    el.querySelector(`.event__input--destination`).addEventListener(`change`, (e) => {
+      let targ = this._destinations.find((it) => it.name === e.target.value);
+
+      this._destination.name = targ.name;
+      this._description = targ.description;
+      this._photo = targ.photo;
+    });
+  }*/
 
   getTemplate() {
     return `<li class="trip-events__item">
@@ -132,7 +146,7 @@ export class EditEvent extends AbstractComponent {
         <label class="event__label  event__type-output" for="event-destination-1">
         ${this._getTitle()}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination.name}" list="destination-list-1">
         <datalist id="destination-list-1">
           ${this._destinations.map((dest) => `<option value="${dest.name}"></option>`).join(``)}
         </datalist>
@@ -192,7 +206,7 @@ export class EditEvent extends AbstractComponent {
         </div>
       </section>` : ``}
 
-      ${this._description ? `<section class="event__section  event__section--destination">
+      <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${this._description}</p>
 
@@ -201,7 +215,7 @@ export class EditEvent extends AbstractComponent {
             ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``)}
           </div>
         </div>
-      </section>` : `` }
+      </section>
     </section>
   </form>
 </li>
