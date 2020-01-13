@@ -48,7 +48,7 @@ export class Stats extends AbstractComponent {
 
   _getTimeData() {
     const data = this._events.reduce((obj, {destination, dateFrom, dateTo}) => {
-      const dest = destination;
+      const dest = destination.name;
       const getDurationHours = () => {
         let time = dateTo - dateFrom;
         return Math.floor(time / 3600000);

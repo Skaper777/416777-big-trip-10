@@ -1,5 +1,17 @@
 import moment from 'moment';
 
+export const sortByTime = (data) => {
+  return data.slice().sort((a, b) => (a.dateTo - a.dateFrom) - (b.dateTo - b.dateFrom));
+};
+
+export const sortByPrice = (data) => {
+  return data.slice().sort((a, b) => a.price - b.price);
+};
+
+export const sortByDate = (data) => {
+  return data.slice().sort((a, b) => a.dateFrom - b.dateFrom);
+};
+
 export const getRandomValue = (min, max) => {
   return Math.round((Math.random() * (max - min)) + min);
 };

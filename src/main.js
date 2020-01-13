@@ -3,7 +3,7 @@ import {Menu} from './components/menu';
 import {Filters} from './components/filters';
 import {TotalPrice} from './components/total-price';
 import {getMenu} from './data';
-import {render, position} from './utils';
+import {render, position, sortByDate} from './utils';
 
 import {TripController} from './controllers/trip-controller';
 import {Stats} from './components/stats';
@@ -99,6 +99,7 @@ Promise.all([offs, pnts, dstns]).then((res) => {
   store.setDestinations(destinations);
   store.setOffers(offers);
 
+  points.sort((a, b) => a.dateFrom - b.dateFrom);
   tripController = new TripController(tripContainer, points, store, api);
   tripController.init();
 

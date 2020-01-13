@@ -16,42 +16,8 @@ export class PointController {
     this._store = store;
     this._point = new Point(data);
     this._editForm = new EditEvent(data, store);
-    this._destinations = store.getDestinations();
 
     this.init(mode);
-    this._onTypeHandler();
-    this._onDestHandler();
-  }
-
-  _onTypeHandler() {
-    const checkboxes = this._editForm.getElement().querySelectorAll(`.event__type-input`);
-
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (this._editForm._type === checkboxes[i].value) {
-        checkboxes[i].checked = true;
-      }
-
-      checkboxes[i].addEventListener(`click`, (evt) => {
-        if (evt.target === checkboxes[i]) {
-          checkboxes[i].checked = true;
-          this._editForm._type = checkboxes[i].value;
-          this._editForm.getElement().querySelector(`.event__type-icon`).src = `img/icons/${this._editForm._type}.png`;
-          this._editForm.getElement().querySelector(`.event__type-output`).textContent = `${this._editForm._getTitle()}`;
-        }
-      });
-    }
-  }
-
-  _onDestHandler() {
-    const el = this._editForm.getElement().querySelector(`.event__input--destination`);
-
-    el.addEventListener(`change`, (e) => {
-      let targ = this._destinations.find((it) => it.name === e.target.value);
-
-      this._editForm.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
-      this._editForm.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
-
-    });
   }
 
   _renderEventMessage() {

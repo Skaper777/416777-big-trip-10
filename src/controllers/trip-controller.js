@@ -1,11 +1,10 @@
 import {Sort} from '../components/sort';
 import {TripDays} from '../components/trip-days';
 import {Day} from '../components/day';
-import {render, position, Mode} from '../utils';
+import {render, position, Mode, sortByDate, sortByPrice, sortByTime} from '../utils';
 import {EventsList} from '../components/events-list';
 import {PointController} from './point-controller';
 import {EventMessage} from '../components/event-message';
-import {types, getPhoto} from '../data';
 import moment from 'moment';
 
 const PointControllerMode = Mode;
@@ -81,7 +80,9 @@ export class TripController {
     this._eventsList.removeElement();
 
     render(this._day.getElement(), this._eventsList.getElement(), position.BEFOREEND);
-    events.forEach((mock) => this._renderEvent(mock));
+
+    const sortedEvents = sortByDate(events);
+    sortedEvents.forEach((mock) => this._renderEvent(mock));
   }
 
   _onDataChange(newData, oldData) {
@@ -138,12 +139,12 @@ export class TripController {
 
     switch (evt.target.dataset.sortType) {
       case `time`:
-        const sortedByTime = this._events.slice().sort((a, b) => (moment(a.dateTo).format(`x`)) - (moment(a.dateFrom).format(`x`)) - (moment(b.dateIn).format(`x`)) - (moment(b.dateFrom).format(`x`)));
+        const sortedByTime = sortByTime(this._events);
         sortedByTime.forEach((mock) => this._renderEvent(mock));
         break;
 
       case `price`:
-        const sortedByPrice = this._events.slice().sort((a, b) => a.price - b.price);
+        const sortedByPrice = sortByPrice(this._events);
         sortedByPrice.forEach((mock) => this._renderEvent(mock));
         break;
 

@@ -16,9 +16,14 @@ export class EditEvent extends AbstractComponent {
     this._offersList = store.getOffers();
     this._destinations = store.getDestinations();
 
-    this._currentOffers = this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
+    this._currentOffers = this._getCurrentOffers();
 
-    //this._subscribeOnEvents();
+    this._onDestHandler();
+    this._onTypeHandler();
+  }
+
+  _getCurrentOffers() {
+    return this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
   }
 
   _getTitle() {
@@ -58,17 +63,46 @@ export class EditEvent extends AbstractComponent {
     }
   }
 
-  /*_subscribeOnEvents() {
-    const el = this.getElement();
+  _onTypeHandler() {
+    const checkboxes = this.getElement().querySelectorAll(`.event__type-input`);
 
-    el.querySelector(`.event__input--destination`).addEventListener(`change`, (e) => {
+    for (let i = 0; i < checkboxes.length; i++) {
+      if (this._type === checkboxes[i].value) {
+        checkboxes[i].checked = true;
+      }
+
+      checkboxes[i].addEventListener(`click`, (evt) => {
+        if (evt.target === checkboxes[i]) {
+          checkboxes[i].checked = true;
+          this._type = checkboxes[i].value;
+          this.getElement().querySelector(`.event__type-icon`).src = `img/icons/${this._type}.png`;
+          this.getElement().querySelector(`.event__type-output`).textContent = `${this._getTitle()}`;
+
+          this.getElement().querySelector(`.event__available-offers`).innerHTML = this._getCurrentOffers().map((item) =>
+            `<div class="event__offer-selector">
+                    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.name}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
+                    <label class="event__offer-label" for="event-offer-${item.name}-1">
+                      <span class="event__offer-title">${item.name}</span>
+                      &plus;
+                      &euro;&nbsp;<span class="event__offer-price">${item.price}</span>
+                    </label>
+                  </div>`).join(``);
+        }
+      });
+    }
+  }
+
+  _onDestHandler() {
+    const el = this.getElement().querySelector(`.event__input--destination`);
+
+    el.addEventListener(`change`, (e) => {
       let targ = this._destinations.find((it) => it.name === e.target.value);
 
-      this._destination.name = targ.name;
-      this._description = targ.description;
-      this._photo = targ.photo;
+      this.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
+      this.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
+
     });
-  }*/
+  }
 
   getTemplate() {
     return `<li class="trip-events__item">

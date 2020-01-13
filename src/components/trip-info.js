@@ -1,4 +1,5 @@
 import {AbstractComponent} from './abstract';
+import {sortByDate} from '../utils';
 
 export class TripInfo extends AbstractComponent {
   constructor(events) {
@@ -17,8 +18,9 @@ export class TripInfo extends AbstractComponent {
 
   _getTripDate() {
     let days = [];
-    let firstDate = this._events[0].dateFrom;
-    let lastDate = this._events[this._events.length - 1].dateTo;
+    const sortEvents = sortByDate(this._events);
+    let firstDate = sortEvents[0].dateFrom;
+    let lastDate = sortEvents[sortEvents.length - 1].dateTo;
 
     let firstDay = new Date(firstDate).toString().split(` `);
     days.push([firstDay[1], firstDay[2]].join(` `));
@@ -38,7 +40,7 @@ export class TripInfo extends AbstractComponent {
     let cities = [];
 
     for (let el of arr) {
-      let city = el.destination;
+      let city = el.destination.name;
       cities.push(city);
     }
 
