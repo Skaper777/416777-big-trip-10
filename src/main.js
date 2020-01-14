@@ -3,7 +3,7 @@ import {Menu} from './components/menu';
 import {Filters} from './components/filters';
 import {TotalPrice} from './components/total-price';
 import {getMenu} from './data';
-import {render, position, sortByDate} from './utils';
+import {render, position} from './utils';
 
 import {TripController} from './controllers/trip-controller';
 import {Stats} from './components/stats';

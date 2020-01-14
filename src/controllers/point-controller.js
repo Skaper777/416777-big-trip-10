@@ -42,6 +42,28 @@ export class PointController {
     }
   }
 
+  disableForm(textBtn) {
+    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((it) => it.setAttribute(`disabled`, `disabled`));
+
+    if (textBtn === `Saving...`) {
+      this._editForm.setSaveBtnText(textBtn);
+    } else {
+      this._editForm.setDeleteBtnTxt(textBtn);
+    }
+  }
+
+  unlockForm() {
+    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((it) => it.removeAttribute(`disabled`, `disabled`));
+    this._editForm.setSaveBtnText(`Save`);
+    this._editForm.setDeleteBtnTxt(`Delete`);
+  }
+
+  errorOnForm() {
+    this.unlockForm();
+    this._editForm.getElement().style = `border-radius: 5px; border: 1px solid red`;
+    this._editForm.getElement().classList.add(`shake`);
+  }
+
   init(mode) {
     let currentView = this._point;
     let renderPosition = position.BEFOREEND;
@@ -121,7 +143,9 @@ export class PointController {
           'is_favorite': false
         };
 
-        this._onDataChange(entry, mode === Mode.DEFAULT ? this._data : null);
+        this._editForm.getElement().style = `border: none`;
+        this.disableForm(`Saving...`);
+        this._onDataChange(entry, mode === Mode.DEFAULT ? this._data : null, this);
 
         document.addEventListener(`keydown`, onEscKeyDown);
       });
@@ -136,6 +160,7 @@ export class PointController {
           this._onDataChange(null, null);
         }
 
+        this.disableForm(`Deleting...`);
         this._checkLengthTrip();
       });
 

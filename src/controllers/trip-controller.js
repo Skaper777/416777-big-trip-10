@@ -85,7 +85,7 @@ export class TripController {
     sortedEvents.forEach((mock) => this._renderEvent(mock));
   }
 
-  _onDataChange(newData, oldData) {
+  _onDataChange(newData, oldData, pointController) {
     const index = this._events.findIndex((mock) => mock === oldData);
 
     if (newData === null) {
@@ -96,6 +96,9 @@ export class TripController {
           .then(() => {
             this._events = [...this._events.slice(0, index), ...this._events.slice(index + 1)]; // удаление старого ивента
             this._renderEvents(this._events);
+          })
+          .catch(() => {
+            pointController.errorOnForm();
           });
       }
     } else {
@@ -105,6 +108,9 @@ export class TripController {
             this._creatingEvent = null;
             this._events = [data, ...this._events];
             this._renderEvents(this._events);
+          })
+          .catch(() => {
+            pointController.errorOnForm();
           });
 
       } else { // редактирование старого ивента
@@ -112,6 +118,9 @@ export class TripController {
           .then((point) => {
             this._events[index] = point;
             this._renderEvents(this._events);
+          })
+          .catch(() => {
+            pointController.errorOnForm();
           });
       }
     }

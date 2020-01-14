@@ -22,6 +22,14 @@ export class EditEvent extends AbstractComponent {
     this._onTypeHandler();
   }
 
+  setSaveBtnText(text) {
+    this.getElement().querySelector(`.event__save-btn`).textContent = text;
+  }
+
+  setDeleteBtnTxt(text) {
+    this.getElement().querySelector(`.event__reset-btn`).textContent = text;
+  }
+
   _getCurrentOffers() {
     return this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
   }
