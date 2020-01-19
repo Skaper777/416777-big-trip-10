@@ -5,6 +5,7 @@ import {render, position, Mode, sortByDate, sortByPrice, sortByTime} from '../ut
 import {EventsList} from '../components/events-list';
 import {PointController} from './point-controller';
 import {EventMessage} from '../components/event-message';
+import {HeaderController} from './header-controller';
 import moment from 'moment';
 
 const PointControllerMode = Mode;
@@ -15,11 +16,12 @@ export class TripController {
     this._events = events;
     this._sort = new Sort();
     this._tripDays = new TripDays();
-    this._day = new Day();
-    this._eventsList = new EventsList();
+    this._dates = new Set(this._events.map((item) => moment(item.dateFrom).format(`DD`)));
+
     this._store = store;
     this._api = api;
 
+    this._header = new HeaderController(events);
     this._creatingEvent = null;
 
     this._subscriptions = [];
@@ -31,8 +33,20 @@ export class TripController {
   init() {
     render(this._container, this._sort.getElement(), position.AFTERBEGIN);
     render(this._container, this._tripDays.getElement(), position.BEFOREEND);
-    render(this._tripDays.getElement(), this._day.getElement(), position.AFTERBEGIN);
-    render(this._day.getElement(), this._eventsList.getElement(), position.BEFOREEND);
+
+    this._dates.forEach((date, index) => {
+      const day = new Day(date, index);
+      const eventsList = new EventsList();
+
+      this._renderDays(day, eventsList);
+
+      this._events.filter((event) => {
+        return moment(event.dateFrom).format(`DD`) === date;
+      })
+      .forEach((event) => {
+        this._renderEvent(event, eventsList);
+      });
+    });
 
     const sortBtns = document.querySelectorAll(`.trip-sort__btn`);
 
@@ -40,7 +54,7 @@ export class TripController {
       sortBtns[i].addEventListener(`click`, (evt) => this._onSortLabelClick(evt));
     }
 
-    this._events.forEach((mock) => this._renderEvent(mock));
+    this._header.init();
   }
 
   hide() {
@@ -73,16 +87,41 @@ export class TripController {
       isFavorite: false
     };
 
-    this._creatingEvent = new PointController(this._eventsList, defaultEvent, this._store, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
+    const container = new EventsList();
+    const day = new Day(66666, 16);
+
+    this._renderDays(day, container, `afterBegin`);
+
+    this._creatingEvent = new PointController(container, defaultEvent, this._store, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
+  }
+
+  _renderDays(day, container, pos) {
+    render(this._tripDays.getElement(), day.getElement(), pos === `afterBegin` ? position.AFTERBEGIN : position.BEFOREEND);
+    render(day.getElement(), container.getElement(), position.BEFOREEND);
   }
 
   _renderEvents(events) {
-    this._eventsList.removeElement();
+    this._tripDays.getElement().innerHTML = ``;
 
-    render(this._day.getElement(), this._eventsList.getElement(), position.BEFOREEND);
+    this._dates.forEach((date, index) => {
+      const day = new Day(date, index);
+      const eventsList = new EventsList();
 
-    const sortedEvents = sortByDate(events);
-    sortedEvents.forEach((mock) => this._renderEvent(mock));
+      this._renderDays(day, eventsList);
+
+      events.filter((event) => {
+        return moment(event.dateFrom).format(`DD`) === date;
+      })
+      .forEach((event) => {
+        this._renderEvent(event, eventsList);
+      });
+    });
+
+    //const sortedEvents = sortByDate(events);
+    //sortedEvents.forEach((mock) => this._renderEvent(mock));
+
+    this._header = new HeaderController(events);
+    this._header.init();
   }
 
   _onDataChange(newData, oldData, pointController) {
@@ -91,6 +130,7 @@ export class TripController {
     if (newData === null) {
       if (oldData === null) { // если открыт новый ивент
         this._creatingEvent = null; // удаляется пустая форма
+        this._renderEvents(this._events);
       } else {
         this._api.deletePoint(oldData.id)
           .then(() => {
@@ -137,8 +177,8 @@ export class TripController {
     render(mainContainer, message.getElement(), position.AFTERBEGIN);
   }
 
-  _renderEvent(eventMock) {
-    const pointController = new PointController(this._eventsList, eventMock, this._store, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
+  _renderEvent(eventMock, container) {
+    const pointController = new PointController(container, eventMock, this._store, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
 
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }

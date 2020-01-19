@@ -1,7 +1,5 @@
-import {TripInfo} from './components/trip-info';
 import {Menu} from './components/menu';
 import {Filters} from './components/filters';
-import {TotalPrice} from './components/total-price';
 import {getMenu} from './data';
 import {render, position} from './utils';
 
@@ -16,10 +14,8 @@ const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 const store = new Store();
 const api = new API(END_POINT, AUTHORIZATION);
 
-const infoContainer = document.querySelector(`.trip-main__trip-info`);
 const menuContainer = document.querySelector(`.trip-main__trip-controls`);
 const tripContainer = document.querySelector(`.trip-events`);
-const priceContainer = document.querySelector(`.trip-info__cost-value`);
 const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
 
 const stats = new Stats();
@@ -33,9 +29,7 @@ renderStats();
 const renderMenu = (mock) => {
   const menu = new Menu(mock);
 
-
   render(menuContainer, menu.getElement(), position.AFTERBEGIN);
-
 
   menu.getElement().addEventListener(`click`, (e) => {
     e.preventDefault();
@@ -83,18 +77,6 @@ const dstns = api.getDestinations();
 
 Promise.all([offs, pnts, dstns]).then((res) => {
   const [offers, points, destinations] = res;
-  const renderTripInfo = () => {
-    const tripInfo = new TripInfo(points);
-
-    render(infoContainer, tripInfo.getElement(), position.AFTERBEGIN);
-  };
-
-  const renderTotalPrice = () => {
-    const price = new TotalPrice(points);
-    priceContainer.innerHTML = ``;
-
-    render(priceContainer, price.getElement(), position.AFTERBEGIN);
-  };
 
   store.setDestinations(destinations);
   store.setOffers(offers);
@@ -106,16 +88,8 @@ Promise.all([offs, pnts, dstns]).then((res) => {
   const statsGraph = new Stats(points);
   statsGraph.init();
 
-  const events = document.querySelectorAll(`.event`);
-
-  if (events.length > 0) {
-    renderTripInfo();
-    renderTotalPrice();
-  }
-
   tripController.filterEvents();
 });
-
 
 renderMenu(getMenu());
 renderFilters();

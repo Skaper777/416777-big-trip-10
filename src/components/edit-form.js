@@ -2,7 +2,7 @@ import {AbstractComponent} from './abstract.js';
 import moment from 'moment';
 
 export class EditEvent extends AbstractComponent {
-  constructor({type, destination, dateFrom, dateTo, price, offers}, store) {
+  constructor({type, destination, dateFrom, dateTo, price, offers, isFavorite}, store) {
     super();
     this._type = type;
     this._destination = destination;
@@ -15,6 +15,7 @@ export class EditEvent extends AbstractComponent {
 
     this._offersList = store.getOffers();
     this._destinations = store.getDestinations();
+    this._isFavorite = isFavorite;
 
     this._currentOffers = this._getCurrentOffers();
 
@@ -217,7 +218,7 @@ export class EditEvent extends AbstractComponent {
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Delete</button>
 
-      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite">
+      <input id="event-favorite-1" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${this._isFavorite ? `checked` : ``}>
       <label class="event__favorite-btn" for="event-favorite-1">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">

@@ -140,7 +140,7 @@ export class PointController {
               price: +item.querySelector(`.event__offer-price`).textContent
             }
           )),
-          'is_favorite': false
+          'is_favorite': document.querySelector(`.event__favorite-checkbox`).checked ? true : false
         };
 
         this._editForm.getElement().style = `border: none`;
