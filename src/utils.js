@@ -8,6 +8,8 @@ export const sortByPrice = (data) => {
   return data.slice().sort((a, b) => a.price - b.price);
 };
 
+export const parseDate = (value) => moment(value, `YYYY MMM DD`).valueOf();
+
 export const sortByDate = (data) => {
   return data.slice().sort((a, b) => a.dateFrom - b.dateFrom);
 };

@@ -15,7 +15,7 @@ export class Day extends AbstractComponent {
     return `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${count}</span>
-        <time class="day__date" datetime="${moment(this._day).format()}">${date}</time>
+        <time class="day__date" datetime="${moment(date).format(`YYYY-MM-DD`)}">${moment(date).format(`DD-MM`)}</time>
       </div>
     </li>
     `;

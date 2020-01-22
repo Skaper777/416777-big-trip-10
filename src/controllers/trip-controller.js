@@ -1,7 +1,7 @@
 import {Sort} from '../components/sort';
 import {TripDays} from '../components/trip-days';
 import {Day} from '../components/day';
-import {render, position, Mode, sortByDate, sortByPrice, sortByTime} from '../utils';
+import {render, position, Mode, sortByDate, parseDate, sortByPrice, sortByTime} from '../utils';
 import {EventsList} from '../components/events-list';
 import {PointController} from './point-controller';
 import {EventMessage} from '../components/event-message';
@@ -16,7 +16,8 @@ export class TripController {
     this._events = events;
     this._sort = new Sort();
     this._tripDays = new TripDays();
-    this._dates = new Set(this._events.map((item) => moment(item.dateFrom).format(`DD`)));
+    this._dates = new Set(this._events.map((item) => moment(item.dateFrom).format(`YYYY MM DD`)));
+    this._formattedDates = [...this._dates];
 
     this._store = store;
     this._api = api;
@@ -25,6 +26,7 @@ export class TripController {
     this._creatingEvent = null;
 
     this._subscriptions = [];
+    this._isSorting = false;
 
     this._onChangeView = this._onChangeView.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
@@ -34,25 +36,11 @@ export class TripController {
     render(this._container, this._sort.getElement(), position.AFTERBEGIN);
     render(this._container, this._tripDays.getElement(), position.BEFOREEND);
 
-    this._dates.forEach((date, index) => {
-      const day = new Day(date, index);
-      const eventsList = new EventsList();
-
-      this._renderDays(day, eventsList);
-
-      this._events.filter((event) => {
-        return moment(event.dateFrom).format(`DD`) === date;
-      })
-      .forEach((event) => {
-        this._renderEvent(event, eventsList);
-      });
+    this._formattedDates.forEach((date, index) => {
+      this._checkEventsForDate(date, index);
     });
 
-    const sortBtns = document.querySelectorAll(`.trip-sort__btn`);
-
-    for (let i = 0; i < sortBtns.length; i++) {
-      sortBtns[i].addEventListener(`click`, (evt) => this._onSortLabelClick(evt));
-    }
+    document.querySelectorAll(`.trip-sort__btn`).forEach((item) => item.addEventListener(`click`, (evt) => this._onSortLabelClick(evt)));
 
     this._header.init();
   }
@@ -88,11 +76,25 @@ export class TripController {
     };
 
     const container = new EventsList();
-    const day = new Day(66666, 16);
+    const day = new Day(defaultEvent.dateFrom, 1);
 
     this._renderDays(day, container, `afterBegin`);
 
     this._creatingEvent = new PointController(container, defaultEvent, this._store, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
+  }
+
+  _checkEventsForDate(date, index) {
+    const day = new Day(parseDate(date), index + 1);
+    const eventsList = new EventsList();
+
+    this._renderDays(day, eventsList);
+
+    this._events.filter((event) => {
+      return moment(event.dateFrom).format(`YYYY MM DD`) === date;
+    })
+    .forEach((event) => {
+      this._renderEvent(event, eventsList);
+    });
   }
 
   _renderDays(day, container, pos) {
@@ -103,22 +105,14 @@ export class TripController {
   _renderEvents(events) {
     this._tripDays.getElement().innerHTML = ``;
 
-    this._dates.forEach((date, index) => {
-      const day = new Day(date, index);
-      const eventsList = new EventsList();
-
-      this._renderDays(day, eventsList);
-
-      events.filter((event) => {
-        return moment(event.dateFrom).format(`DD`) === date;
-      })
-      .forEach((event) => {
-        this._renderEvent(event, eventsList);
+    if (!this._isSortig) {
+      this._formattedDates.forEach((date, index) => {
+        this._checkEventsForDate(date, index);
       });
-    });
+    }
 
-    //const sortedEvents = sortByDate(events);
-    //sortedEvents.forEach((mock) => this._renderEvent(mock));
+    // const sortedEvents = sortByDate(events);
+    // sortedEvents.forEach((mock) => this._renderEvent(mock));
 
     this._header = new HeaderController(events);
     this._header.init();
@@ -184,21 +178,24 @@ export class TripController {
   }
 
   _onSortLabelClick(evt) {
+    this._isSorting = true;
     document.querySelector(`.trip-events__list`).innerHTML = ``;
+
+    const container = new EventsList();
 
     switch (evt.target.dataset.sortType) {
       case `time`:
         const sortedByTime = sortByTime(this._events);
-        sortedByTime.forEach((mock) => this._renderEvent(mock));
+        sortedByTime.forEach((mock) => this._renderEvent(mock, container));
         break;
 
       case `price`:
         const sortedByPrice = sortByPrice(this._events);
-        sortedByPrice.forEach((mock) => this._renderEvent(mock));
+        sortedByPrice.forEach((mock) => this._renderEvent(mock, container));
         break;
 
       case `event`:
-        this._events.forEach((mock) => this._renderEvent(mock));
+        this._events.forEach((mock) => this._renderEvent(mock, container));
         break;
     }
   }
