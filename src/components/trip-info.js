@@ -1,7 +1,9 @@
-import {AbstractComponent} from './abstract';
+import AbstractComponent from './abstract';
 import {sortByDate} from '../utils';
-
-export class TripInfo extends AbstractComponent {
+/**
+ * Класс шаблона информации о путешествии
+ */
+export default class TripInfo extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
@@ -16,6 +18,7 @@ export class TripInfo extends AbstractComponent {
     `;
   }
 
+  // Метод получения дат поездки
   _getTripDate() {
     let days = [];
     const sortEvents = sortByDate(this._events);
@@ -32,10 +35,12 @@ export class TripInfo extends AbstractComponent {
     return stringList;
   }
 
+  // Метод форматирования информации
   _formatInfo(arr) {
     return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);
   }
 
+  // Метод получения списка городов
   _getTripCities(arr) {
     let cities = [];
 

@@ -1,6 +1,8 @@
-import {AbstractComponent} from './abstract';
-
-export class Sort extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона сортировки
+ */
+export default class Sort extends AbstractComponent {
   constructor() {
     super();
   }

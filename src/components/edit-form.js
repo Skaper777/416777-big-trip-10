@@ -1,7 +1,10 @@
-import {AbstractComponent} from './abstract.js';
+import AbstractComponent from './abstract.js';
+import {getTitle} from '../utils';
 import moment from 'moment';
-
-export class EditEvent extends AbstractComponent {
+/**
+ * Класс шаблона редактирования события
+ */
+export default class EditEvent extends AbstractComponent {
   constructor({type, destination, dateFrom, dateTo, price, offers, isFavorite}, store) {
     super();
     this._type = type;
@@ -11,7 +14,7 @@ export class EditEvent extends AbstractComponent {
     this._price = price;
     this._offers = offers;
     this._description = destination.description;
-    this._photo = destination.pictures;
+    this._photos = destination.pictures;
 
     this._offersList = store.getOffers();
     this._destinations = store.getDestinations();
@@ -23,55 +26,22 @@ export class EditEvent extends AbstractComponent {
     this._onTypeHandler();
   }
 
+  // метод изменения текста кнопки сохраниения
   setSaveBtnText(text) {
     this.getElement().querySelector(`.event__save-btn`).textContent = text;
   }
 
+  // метод изменения текста кнопки удаления
   setDeleteBtnTxt(text) {
     this.getElement().querySelector(`.event__reset-btn`).textContent = text;
   }
 
+  // метод получения актуальных офферов
   _getCurrentOffers() {
     return this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
   }
 
-  _getTitle() {
-    switch (this._type) {
-      case `taxi`:
-        return `Taxi to`;
-
-      case `bus`:
-        return `Bus to`;
-
-      case `train`:
-        return `Train to`;
-
-      case `ship`:
-        return `Ship to`;
-
-      case `transport`:
-        return `Transport to`;
-
-      case `drive`:
-        return `Drive to`;
-
-      case `flight`:
-        return `Flight to`;
-
-      case `check-in`:
-        return `Check-in in`;
-
-      case `sightseeing`:
-        return `Sightseeing at`;
-
-      case `restaurant`:
-        return `Restaurant in`;
-
-      default:
-        return ``;
-    }
-  }
-
+  // метод ререндеринга офферов от типа
   _onTypeHandler() {
     const checkboxes = this.getElement().querySelectorAll(`.event__type-input`);
 
@@ -85,7 +55,7 @@ export class EditEvent extends AbstractComponent {
           checkboxes[i].checked = true;
           this._type = checkboxes[i].value;
           this.getElement().querySelector(`.event__type-icon`).src = `img/icons/${this._type}.png`;
-          this.getElement().querySelector(`.event__type-output`).textContent = `${this._getTitle()}`;
+          this.getElement().querySelector(`.event__type-output`).textContent = `${getTitle(this._type)}`;
 
           this.getElement().querySelector(`.event__available-offers`).innerHTML = this._getCurrentOffers().map((item) =>
             `<div class="event__offer-selector">
@@ -101,15 +71,22 @@ export class EditEvent extends AbstractComponent {
     }
   }
 
+  // метод ререндеринга описания и фото от пункта назначения
   _onDestHandler() {
     const el = this.getElement().querySelector(`.event__input--destination`);
 
     el.addEventListener(`change`, (e) => {
       let targ = this._destinations.find((it) => it.name === e.target.value);
 
-      this.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
-      this.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
-
+      if (!targ) {
+        e.preventDefault();
+        this.getElement().style.position = `relative`;
+        this.getElement().querySelector(`.wrong-destination`).style = `display: block; color: red; position: absolute; top: 40px`;
+      } else {
+        this.getElement().querySelector(`.wrong-destination`).style = `display: none`;
+        this.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
+        this.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
+      }
     });
   }
 
@@ -187,12 +164,13 @@ export class EditEvent extends AbstractComponent {
 
       <div class="event__field-group  event__field-group--destination">
         <label class="event__label  event__type-output" for="event-destination-1">
-        ${this._getTitle()}
+        ${getTitle(this._type)}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${this._destination.name}" list="destination-list-1" required>
         <datalist id="destination-list-1">
-          ${this._destinations.map((dest) => `<option value="${dest.name}"></option>`).join(``)}
+          ${this._destinations.map((dest) => `<option class="datalist-option" value="${dest.name}"></option>`).join(``)}
         </datalist>
+        <p class="wrong-destination" style="display: none">Wrong destination, choose from the list</p>
       </div>
 
       <div class="event__field-group  event__field-group--time">
@@ -212,7 +190,7 @@ export class EditEvent extends AbstractComponent {
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value=${this._price}>
+        <input class="event__input  event__input--price" id="event-price-1" type="number" min="1" name="event-price" value=${this._price} require>
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -255,7 +233,7 @@ export class EditEvent extends AbstractComponent {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${this._photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``)}
+            ${this._photos[0].src ? this._photos.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``) : ``}
           </div>
         </div>
       </section>

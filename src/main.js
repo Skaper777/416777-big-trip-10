@@ -1,13 +1,13 @@
-import {Menu} from './components/menu';
-import {Filters} from './components/filters';
-import {getMenu} from './data';
+import Menu from './components/menu';
+import Filters from './components/filters';
 import {render, position} from './utils';
-
-import {TripController} from './controllers/trip-controller';
-import {Stats} from './components/stats';
-import {API} from './api.js';
-import {Store} from './data';
-
+import TripController from './controllers/trip-controller';
+import Stats from './components/stats';
+import API from './api.js';
+import Store from './store';
+/**
+ * Точка входа приложения
+ */
 const AUTHORIZATION = `Basic eo0w590ik29889a`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 
@@ -20,14 +20,16 @@ const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
 
 const stats = new Stats();
 
+// Метод отрисовки блока статистики
 const renderStats = () => {
   render(mainContainer, stats.getElement(), position.BEFOREEND);
 };
 
 renderStats();
 
-const renderMenu = (mock) => {
-  const menu = new Menu(mock);
+// Метод отрисовки блока меню
+const renderMenu = () => {
+  const menu = new Menu();
 
   render(menuContainer, menu.getElement(), position.AFTERBEGIN);
 
@@ -57,12 +59,14 @@ const renderMenu = (mock) => {
 
 const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
+// Метод создания нвого события
 const addEvent = () => {
   tripController.createEvent();
 };
 
 addBtn.addEventListener(`click`, addEvent);
 
+// Метод отрисовки блока фильтров
 const renderFilters = () => {
   const filters = new Filters();
 
@@ -75,6 +79,7 @@ const offs = api.getOffers();
 const pnts = api.getPoints();
 const dstns = api.getDestinations();
 
+// Загрузка данных и создания контроллера поездки
 Promise.all([offs, pnts, dstns]).then((res) => {
   const [offers, points, destinations] = res;
 
@@ -87,9 +92,7 @@ Promise.all([offs, pnts, dstns]).then((res) => {
 
   const statsGraph = new Stats(points);
   statsGraph.init();
-
-  tripController.filterEvents();
 });
 
-renderMenu(getMenu());
+renderMenu();
 renderFilters();

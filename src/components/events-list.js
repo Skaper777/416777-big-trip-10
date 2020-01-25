@@ -1,6 +1,8 @@
-import {AbstractComponent} from './abstract';
-
-export class EventsList extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ *  Класс шаблона списка событий
+ */
+export default class EventsList extends AbstractComponent {
   constructor() {
     super();
   }

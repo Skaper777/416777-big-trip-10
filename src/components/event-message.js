@@ -1,6 +1,8 @@
-import {AbstractComponent} from './abstract';
-
-export class EventMessage extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона сообщения при пустом списке событий
+ */
+export default class EventMessage extends AbstractComponent {
   constructor() {
     super();
   }

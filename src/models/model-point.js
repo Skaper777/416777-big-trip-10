@@ -1,4 +1,7 @@
-export class ModelPoint {
+/**
+ * Класс модели событий
+ */
+export default class ModelPoint {
   constructor(data) {
     this.id = data.id;
     this.type = data.type;
@@ -13,19 +16,7 @@ export class ModelPoint {
     this._getTransport();
   }
 
-  toRAW() {
-    return {
-      'id': this.id,
-      'base_price': this.price,
-      'date_from': this.dateFrom,
-      'date_to': this.dateTo,
-      'destination': this.destination,
-      'is_favorite': this.isFavorite,
-      'offers': this.offers,
-      'type': this.type
-    };
-  }
-
+  // Метод проверки типа
   _getTransport() {
     if (this.type === `taxi` ||
         this.type === `bus` ||
@@ -40,15 +31,13 @@ export class ModelPoint {
     return ``;
   }
 
+  // Метод создания одного пункта
   static parsePoint(data) {
     return new ModelPoint(data);
   }
 
+  // Метод создания всех пунктов
   static parsePoints(data) {
     return data.map(ModelPoint.parsePoint);
-  }
-
-  static clone(data) {
-    return new ModelPoint(data.toRAW());
   }
 }

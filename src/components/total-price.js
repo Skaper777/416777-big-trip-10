@@ -1,7 +1,9 @@
-import {AbstractComponent} from './abstract';
+import AbstractComponent from './abstract';
 import {renderTotalPrice} from "../utils";
-
-export class TotalPrice extends AbstractComponent {
+/**
+ * Класс шаблона итоговой цены
+ */
+export default class TotalPrice extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;

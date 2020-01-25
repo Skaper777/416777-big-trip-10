@@ -1,13 +1,16 @@
-import {AbstractComponent} from './abstract';
+import AbstractComponent from './abstract';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-export class Stats extends AbstractComponent {
+/**
+ * Класс шаблона статистики
+ */
+export default class Stats extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
   }
 
+  // Метод инициализации
   init() {
     const moneyCtx = document.querySelector(`.statistics__chart--money`);
     const transportCtx = document.querySelector(`.statistics__chart--transport`);
@@ -18,6 +21,7 @@ export class Stats extends AbstractComponent {
     this._timeChart = new Chart(timeCtx, this._getConfig(this._getTimeData(), `TIME`, (value) => value + `H`));
   }
 
+  // Метод поулчения данных по стоимости
   _getMoneyData() {
     const data = this._events.reduce((obj, {type, price}) => {
       const name = type;
@@ -30,6 +34,7 @@ export class Stats extends AbstractComponent {
     return data;
   }
 
+  // Метод получения данных по транспорту
   _getTransportData() {
     const data = this._events.reduce((obj, {type, typeOfType}) => {
       if (typeOfType === `transport`) {
@@ -46,6 +51,7 @@ export class Stats extends AbstractComponent {
     return data;
   }
 
+  // Метод получения данных по времени
   _getTimeData() {
     const data = this._events.reduce((obj, {destination, dateFrom, dateTo}) => {
       const dest = destination.name;
@@ -63,6 +69,7 @@ export class Stats extends AbstractComponent {
     return data;
   }
 
+  // Метод получения настроек плагина
   _getConfig(data, title, formatIcon) {
     const keys = Object.keys(data);
 

@@ -1,9 +1,19 @@
-import {AbstractComponent} from './abstract';
-
-export class Menu extends AbstractComponent {
-  constructor({list}) {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона меню
+ */
+export default class Menu extends AbstractComponent {
+  constructor() {
     super();
-    this._list = list;
+    this._list = [{
+      name: `Table`,
+      active: true
+    },
+    {
+      name: `Stats`,
+      active: false
+    }
+    ];
   }
 
   getTemplate() {

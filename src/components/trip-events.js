@@ -1,6 +1,8 @@
-import {AbstractComponent} from './abstract';
-
-export class TripEvents extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона секции для событий
+ */
+export default class TripEvents extends AbstractComponent {
   constructor() {
     super();
   }

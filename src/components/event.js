@@ -1,8 +1,10 @@
-import {AbstractComponent} from './abstract';
+import AbstractComponent from './abstract';
 import moment from 'moment';
-import {getDuration} from '../utils';
-
-export class Point extends AbstractComponent {
+import {getDuration, getTitle} from '../utils';
+/**
+ * Класс шаблона события
+ */
+export default class Point extends AbstractComponent {
   constructor({type, destination, dateFrom, dateTo, price, offers}) {
     super();
     this._type = type;
@@ -13,50 +15,13 @@ export class Point extends AbstractComponent {
     this._offers = offers;
   }
 
-  _getTitle() {
-    switch (this._type) {
-      case `taxi`:
-        return `Taxi to`;
-
-      case `bus`:
-        return `Bus to`;
-
-      case `train`:
-        return `Train to`;
-
-      case `ship`:
-        return `Ship to`;
-
-      case `transport`:
-        return `Transport to`;
-
-      case `drive`:
-        return `Drive to`;
-
-      case `flight`:
-        return `Flight to`;
-
-      case `check-in`:
-        return `Check-in in`;
-
-      case `sightseeing`:
-        return `Sightseeing in`;
-
-      case `restaurant`:
-        return `Restaurant in`;
-
-      default:
-        return ``;
-    }
-  }
-
   getTemplate() {
     return `<li class="trip-events__item">
     <div class="event">
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${this._type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${this._getTitle()} ${this._destination.name}</h3>
+      <h3 class="event__title">${getTitle()} ${this._destination.name}</h3>
 
       <div class="event__schedule">
         <p class="event__time">

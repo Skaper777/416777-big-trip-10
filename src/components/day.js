@@ -1,7 +1,8 @@
-import {AbstractComponent} from './abstract';
-import moment from 'moment';
-
-export class Day extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона для одного дня
+ */
+export default class Day extends AbstractComponent {
   constructor(day, dayCount) {
     super();
     this._day = day;
@@ -11,11 +12,12 @@ export class Day extends AbstractComponent {
   getTemplate() {
     const date = this._day ? this._day : ``;
     const count = this._dayCount ? this._dayCount : ``;
+    const formatDate = date.slice(5);
 
     return `<li class="trip-days__item  day">
       <div class="day__info">
         <span class="day__counter">${count}</span>
-        <time class="day__date" datetime="${moment(date).format(`YYYY-MM-DD`)}">${moment(date).format(`DD-MM`)}</time>
+        <time class="day__date" datetime="${date ? date : ``}">${date ? formatDate : ``}</time>
       </div>
     </li>
     `;

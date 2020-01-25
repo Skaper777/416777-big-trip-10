@@ -1,6 +1,8 @@
-import {AbstractComponent} from './abstract';
-
-export class Filters extends AbstractComponent {
+import AbstractComponent from './abstract';
+/**
+ * Класс шаблона фильтров
+ */
+export default class Filters extends AbstractComponent {
   constructor() {
     super();
   }
