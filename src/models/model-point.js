@@ -32,12 +32,12 @@ export default class ModelPoint {
   }
 
   // Метод создания одного пункта
-  static parsePoint(data) {
-    return new ModelPoint(data);
+  static parsePoint(point) {
+    return new ModelPoint(point);
   }
 
   // Метод создания всех пунктов
-  static parsePoints(data) {
-    return data.map(ModelPoint.parsePoint);
+  static parsePoints(points) {
+    return points.map(ModelPoint.parsePoint);
   }
 }

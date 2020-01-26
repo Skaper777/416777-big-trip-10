@@ -2,7 +2,7 @@ import ModelDest from './models/model-destination';
 import ModelPoint from './models/model-point';
 import ModelOffer from './models/model-offer';
 
-const METHOD = {
+const Method = {
   GET: `GET`,
   POST: `POST`,
   PUT: `PUT`,
@@ -39,11 +39,11 @@ export default class API {
   }
 
   // Метод отправки на сервер нового события
-  createPoint(data) {
+  createPoint(pointData) {
     return this._load({
       url: `points/`,
-      method: METHOD.POST,
-      body: JSON.stringify(data),
+      method: Method.POST,
+      body: JSON.stringify(pointData),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
@@ -51,11 +51,11 @@ export default class API {
   }
 
   // Метод обновления события на сервере
-  updatePoint(id, data) {
+  updatePoint(id, pointData) {
     return this._load({
       url: `points/${id}`,
-      method: METHOD.PUT,
-      body: JSON.stringify(data),
+      method: Method.PUT,
+      body: JSON.stringify(pointData),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then(toJSON)
@@ -64,7 +64,7 @@ export default class API {
 
   // Метод удаления события на сервере
   deletePoint(id) {
-    return this._load({url: `points/${id}`, method: METHOD.DELETE});
+    return this._load({url: `points/${id}`, method: Method.DELETE});
   }
 
   // Метод поулчения списка городов
@@ -82,7 +82,7 @@ export default class API {
   }
 
   // Метод загрузки
-  _load({url, method = METHOD.GET, body = null, headers = new Headers()}) {
+  _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})

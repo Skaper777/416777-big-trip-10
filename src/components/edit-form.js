@@ -15,11 +15,9 @@ export default class EditEvent extends AbstractComponent {
     this._offers = offers;
     this._description = destination.description;
     this._photos = destination.pictures;
-
     this._offersList = store.getOffers();
     this._destinations = store.getDestinations();
     this._isFavorite = isFavorite;
-
     this._currentOffers = this._getCurrentOffers();
 
     this._onDestHandler();
@@ -38,7 +36,8 @@ export default class EditEvent extends AbstractComponent {
 
   // метод получения актуальных офферов
   _getCurrentOffers() {
-    return this._offersList.find((it) => it[0] === this._type)[1].map((it) => it);
+    return this._offersList.find((it) => it[0] === this._type)[1]
+    .map((it) => it);
   }
 
   // метод ререндеринга офферов от типа

@@ -1,6 +1,6 @@
 import Menu from './components/menu';
 import Filters from './components/filters';
-import {render, position} from './utils';
+import {render, Position} from './utils';
 import TripController from './controllers/trip-controller';
 import Stats from './components/stats';
 import API from './api.js';
@@ -11,27 +11,27 @@ import Store from './store';
 const AUTHORIZATION = `Basic eo0w590ik29889a`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 
-const store = new Store();
-const api = new API(END_POINT, AUTHORIZATION);
-
 const menuContainer = document.querySelector(`.trip-main__trip-controls`);
 const tripContainer = document.querySelector(`.trip-events`);
 const mainContainer = document.querySelectorAll(`.page-body__container`)[1];
+const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
+const store = new Store();
+const api = new API(END_POINT, AUTHORIZATION);
 const stats = new Stats();
+
+let tripController;
 
 // Метод отрисовки блока статистики
 const renderStats = () => {
-  render(mainContainer, stats.getElement(), position.BEFOREEND);
+  render(mainContainer, stats.getElement(), Position.BEFOREEND);
 };
-
-renderStats();
 
 // Метод отрисовки блока меню
 const renderMenu = () => {
   const menu = new Menu();
 
-  render(menuContainer, menu.getElement(), position.AFTERBEGIN);
+  render(menuContainer, menu.getElement(), Position.AFTERBEGIN);
 
   menu.getElement().addEventListener(`click`, (e) => {
     e.preventDefault();
@@ -57,31 +57,21 @@ const renderMenu = () => {
   });
 };
 
-const addBtn = document.querySelector(`.trip-main__event-add-btn`);
-
 // Метод создания нвого события
 const addEvent = () => {
   tripController.createEvent();
 };
 
-addBtn.addEventListener(`click`, addEvent);
-
 // Метод отрисовки блока фильтров
 const renderFilters = () => {
   const filters = new Filters();
 
-  render(menuContainer, filters.getElement(), position.BEFOREEND);
+  render(menuContainer, filters.getElement(), Position.BEFOREEND);
 };
 
-let tripController;
-
-const offs = api.getOffers();
-const pnts = api.getPoints();
-const dstns = api.getDestinations();
-
 // Загрузка данных и создания контроллера поездки
-Promise.all([offs, pnts, dstns]).then((res) => {
-  const [offers, points, destinations] = res;
+Promise.all([api.getOffers(), api.getPoints(), api.getDestinations()]).then((result) => {
+  const [offers, points, destinations] = result;
 
   store.setDestinations(destinations);
   store.setOffers(offers);
@@ -94,5 +84,7 @@ Promise.all([offs, pnts, dstns]).then((res) => {
   statsGraph.init();
 });
 
+addBtn.addEventListener(`click`, addEvent);
+renderStats();
 renderMenu();
 renderFilters();

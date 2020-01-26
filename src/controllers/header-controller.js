@@ -1,6 +1,6 @@
 import TotalPrice from '../components/total-price';
 import TripInfo from '../components/trip-info';
-import {render, position} from '../utils';
+import {render, Position} from '../utils';
 /**
  * Класс контроллера шапки сайта
  */
@@ -15,8 +15,8 @@ export default class HeaderController {
     const infoContainer = document.querySelector(`.trip-main__trip-info`);
     infoContainer.innerHTML = ``;
 
-    render(infoContainer, this._tripInfo.getElement(), position.AFTERBEGIN);
-    render(infoContainer, this._price.getElement(), position.BEFOREEND);
+    render(infoContainer, this._tripInfo.getElement(), Position.AFTERBEGIN);
+    render(infoContainer, this._price.getElement(), Position.BEFOREEND);
   }
 
   // Метод инициализации

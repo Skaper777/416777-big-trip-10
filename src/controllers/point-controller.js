@@ -1,6 +1,5 @@
-import {render, position, Mode} from '../utils';
+import {render, Position, Mode} from '../utils';
 import Point from '../components/event';
-// import {modelPoint} from '../models/model-point';
 import EditEvent from '../components/edit-form';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -27,19 +26,19 @@ export default class PointController {
   }
 
   // Метод блокировки полей формы
-  disableForm(textBtn) {
-    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((it) => it.setAttribute(`disabled`, `disabled`));
+  disableForm(textButton) {
+    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((item) => item.setAttribute(`disabled`, `disabled`));
 
-    if (textBtn === `Saving...`) {
-      this._editForm.setSaveBtnText(textBtn);
+    if (textButton === `Saving...`) {
+      this._editForm.setSaveBtnText(textButton);
     } else {
-      this._editForm.setDeleteBtnTxt(textBtn);
+      this._editForm.setDeleteBtnTxt(textButton);
     }
   }
 
   // Метод разблокировки формы
   unlockForm() {
-    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((it) => it.removeAttribute(`disabled`, `disabled`));
+    this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((item) => item.removeAttribute(`disabled`, `disabled`));
     this._editForm.setSaveBtnText(`Save`);
     this._editForm.setDeleteBtnTxt(`Delete`);
   }
@@ -89,11 +88,11 @@ export default class PointController {
   // Метод инициализации
   init(mode) {
     let currentView = this._point;
-    let renderPosition = position.BEFOREEND;
+    let renderPosition = Position.BEFOREEND;
 
     if (mode === Mode.ADDING) {
       currentView = this._editForm;
-      renderPosition = position.AFTERBEGIN;
+      renderPosition = Position.AFTERBEGIN;
     }
 
     const times = this._editForm.getElement().querySelectorAll(`.event__input--time`);
@@ -103,7 +102,7 @@ export default class PointController {
       allowInput: true,
       defaultDate: this._data.dateFrom,
       enableTime: true,
-      altFormat: `d-m-y H:i`,
+      altFormat: `d/m/y H:i`,
     });
 
     flatpickr(times[1], {
@@ -111,7 +110,7 @@ export default class PointController {
       allowInput: true,
       defaultDate: this._data.dateTo,
       enableTime: true,
-      altFormat: `d-m-y H:i`,
+      altFormat: `d/m/y H:i`,
     });
 
     const onEscKeyDown = (evt) => {
@@ -134,7 +133,7 @@ export default class PointController {
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
         this._container.getElement().replaceChild(this._point.getElement(), this._editForm.getElement());
-        document.addEventListener(`keydown`, onEscKeyDown);
+        document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
     // Обработчик отправки формы
@@ -169,8 +168,8 @@ export default class PointController {
           'is_favorite': form.querySelector(`.event__favorite-checkbox`).checked ? true : false
         };
 
-        let checkDest = () => {
-          return destList.find((it) => entry.destination.name === it);
+        const checkDest = () => {
+          return destList.find((item) => entry.destination.name === item);
         };
 
         if (entry.date_from > entry.date_to) {
@@ -182,7 +181,7 @@ export default class PointController {
           this.disableForm(`Saving...`);
           this._onDataChange(entry, mode === Mode.DEFAULT ? this._data : null, this);
 
-          document.addEventListener(`keydown`, onEscKeyDown);
+          document.removeEventListener(`keydown`, onEscKeyDown);
         }
       });
 
@@ -197,6 +196,7 @@ export default class PointController {
         }
 
         this.disableForm(`Deleting...`);
+        document.removeEventListener(`keydown`, onEscKeyDown);
       });
 
     render(this._container.getElement(), currentView.getElement(), renderPosition);

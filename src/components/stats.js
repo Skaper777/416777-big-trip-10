@@ -23,12 +23,12 @@ export default class Stats extends AbstractComponent {
 
   // Метод поулчения данных по стоимости
   _getMoneyData() {
-    const data = this._events.reduce((obj, {type, price}) => {
+    const data = this._events.reduce((object, {type, price}) => {
       const name = type;
-      const prevProp = obj[name] || 0;
-      obj[name] = prevProp + price;
+      const prevProp = object[name] || 0;
+      object[name] = prevProp + price;
 
-      return obj;
+      return object;
     }, {});
 
     return data;
@@ -36,16 +36,16 @@ export default class Stats extends AbstractComponent {
 
   // Метод получения данных по транспорту
   _getTransportData() {
-    const data = this._events.reduce((obj, {type, typeOfType}) => {
+    const data = this._events.reduce((object, {type, typeOfType}) => {
       if (typeOfType === `transport`) {
         const transport = type;
-        const prevProp = obj[transport] || 0;
-        obj[transport] = prevProp + 1;
+        const prevProp = object[transport] || 0;
+        object[transport] = prevProp + 1;
 
-        return obj;
+        return object;
       }
 
-      return obj;
+      return object;
     }, {});
 
     return data;
@@ -53,7 +53,7 @@ export default class Stats extends AbstractComponent {
 
   // Метод получения данных по времени
   _getTimeData() {
-    const data = this._events.reduce((obj, {destination, dateFrom, dateTo}) => {
+    const data = this._events.reduce((object, {destination, dateFrom, dateTo}) => {
       const dest = destination.name;
       const getDurationHours = () => {
         let time = dateTo - dateFrom;
@@ -61,9 +61,9 @@ export default class Stats extends AbstractComponent {
       };
       const hours = getDurationHours();
 
-      obj[dest] = hours;
+      object[dest] = hours;
 
-      return obj;
+      return object;
     }, {});
 
     return data;

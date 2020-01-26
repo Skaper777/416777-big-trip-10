@@ -22,34 +22,35 @@ export default class TripInfo extends AbstractComponent {
   _getTripDate() {
     let days = [];
     const sortEvents = sortByDate(this._events);
-    let firstDate = sortEvents[0].dateFrom;
-    let lastDate = sortEvents[sortEvents.length - 1].dateTo;
+    const firstDate = sortEvents[0].dateFrom;
+    const lastDate = sortEvents[sortEvents.length - 1].dateTo;
 
-    let firstDay = new Date(firstDate).toString().split(` `);
+    const firstDay = new Date(firstDate).toString().split(` `);
     days.push([firstDay[1], firstDay[2]].join(` `));
 
-    let lastDay = new Date(lastDate).toString().split(` `);
+    const lastDay = new Date(lastDate).toString().split(` `);
     days.push([lastDay[1], lastDay[2]].join(` `));
 
-    let stringList = this._formatInfo(days);
-    return stringList;
+    const strings = this._formatInfo(days);
+    return strings;
   }
 
   // Метод форматирования информации
-  _formatInfo(arr) {
-    return arr.length > 2 ? `${arr[0]} — ... — ${arr[arr.length - 1]}` : arr.join(` — `);
+  _formatInfo(array) {
+    const triggerArrayLength = 2;
+    return array.length > triggerArrayLength ? `${array[0]} — ... — ${array[array.length - 1]}` : array.join(` — `);
   }
 
   // Метод получения списка городов
-  _getTripCities(arr) {
+  _getTripCities(array) {
     let cities = [];
 
-    for (let el of arr) {
-      let city = el.destination.name;
+    for (let element of array) {
+      const city = element.destination.name;
       cities.push(city);
     }
 
-    let stringList = this._formatInfo(cities);
+    const stringList = this._formatInfo(cities);
 
     return stringList;
   }

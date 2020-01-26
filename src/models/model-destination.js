@@ -9,12 +9,12 @@ export default class ModelDest {
   }
 
   // Метод создания одного пункта
-  static parseDestination(data) {
-    return new ModelDest(data);
+  static parseDestination(destination) {
+    return new ModelDest(destination);
   }
 
   // Метод создания всех пунктов
-  static parseDestinations(data) {
-    return data.map(ModelDest.parseDestination);
+  static parseDestinations(destinations) {
+    return destinations.map(ModelDest.parseDestination);
   }
 }

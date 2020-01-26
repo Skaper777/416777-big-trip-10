@@ -1,38 +1,18 @@
 import moment from 'moment';
 
 // Метод сортировки по времени
-export const sortByTime = (data) => {
-  return data.slice().sort((a, b) => (a.dateTo - a.dateFrom) - (b.dateTo - b.dateFrom));
+export const sortByTime = (events) => {
+  return events.slice().sort((a, b) => (b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom));
 };
 
 // Метод сортировки по цене
-export const sortByPrice = (data) => {
-  return data.slice().sort((a, b) => a.price - b.price);
+export const sortByPrice = (events) => {
+  return events.slice().sort((a, b) => b.price - a.price);
 };
-
-// Метод парсинга времени в мс.
-export const parseDate = (value) => moment(value, `YYYY MMM DD`).valueOf();
 
 // Метод сортировки по дате
-export const sortByDate = (data) => {
-  return data.slice().sort((a, b) => a.dateFrom - b.dateFrom);
-};
-
-// Метод получения случайного значения
-export const getRandomValue = (min, max) => {
-  return Math.round((Math.random() * (max - min)) + min);
-};
-
-// Метод получения случайного элемента
-export const getRandomElement = (arr) => {
-  return arr[Math.floor(Math.random() * arr.length)];
-};
-
-// Метод получения массива со случайной длинной
-export const getRandomList = (arr, value) => {
-  let newList = arr.slice().sort(() => 0.5 - Math.random());
-  newList.length = Math.round(Math.random() * value);
-  return newList;
+export const sortByDate = (events) => {
+  return events.slice().sort((a, b) => a.dateFrom - b.dateFrom);
 };
 
 // Метод получения интервала по времени
@@ -54,18 +34,18 @@ export const renderTotalPrice = (events) => {
   let sumOffers = 0;
 
   for (let i = 0; i < events.length; i++) {
-    let eventPrice = events[i].price;
+    const eventPrice = events[i].price;
     sumEventsPrice += eventPrice;
 
     events[i].offers.forEach((offer) => {
-      let offersPrice = offer.price;
+      const offersPrice = offer.price;
       sumOffers += offersPrice;
     });
   }
   return sumEventsPrice + sumOffers;
 };
 
-export const position = {
+export const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
 };
@@ -80,10 +60,10 @@ export const createElement = (template) => {
 // Метод рендера элемента в контейнер
 export const render = (container, element, place) => {
   switch (place) {
-    case position.AFTERBEGIN:
+    case Position.AFTERBEGIN:
       container.prepend(element);
       break;
-    case position.BEFOREEND:
+    case Position.BEFOREEND:
       container.append(element);
       break;
   }

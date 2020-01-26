@@ -1,7 +1,7 @@
 import Sort from '../components/sort';
 import TripDays from '../components/trip-days';
 import Day from '../components/day';
-import {render, position, Mode, sortByPrice, sortByTime} from '../utils';
+import {render, Position, Mode, sortByPrice, sortByTime} from '../utils';
 import EventsList from '../components/events-list';
 import PointController from './point-controller';
 import EventMessage from '../components/event-message';
@@ -21,6 +21,7 @@ export default class TripController {
 
     this._store = store;
     this._api = api;
+    this._sortType = `default`;
 
     this._header = new HeaderController(events);
     this._creatingEvent = null;
@@ -33,8 +34,8 @@ export default class TripController {
 
   // Метод инициализации
   init() {
-    render(this._container, this._sort.getElement(), position.AFTERBEGIN);
-    render(this._container, this._tripDays.getElement(), position.BEFOREEND);
+    render(this._container, this._sort.getElement(), Position.AFTERBEGIN);
+    render(this._container, this._tripDays.getElement(), Position.BEFOREEND);
 
     if (!this._events.length) {
       this._renderEventMessage();
@@ -107,8 +108,8 @@ export default class TripController {
 
   // Метод рендеринга событий в соответвующий день
   _renderEventsInDays() {
-    let dates = new Set(this._events.map((item) => moment(item.dateFrom).format(`YYYY MM DD`)));
-    let formatDates = [...dates];
+    const dates = new Set(this._events.sort((a, b) => a.dateFrom - b.dateFrom).map((item) => moment(item.dateFrom).format(`YYYY MM DD`)));
+    const formatDates = [...dates];
 
     formatDates.forEach((date, index) => {
       this._checkEventsForDate(date, index);
@@ -116,16 +117,26 @@ export default class TripController {
   }
 
   // Метод рендеринга дней
-  _renderDays(day, container, pos) {
-    render(this._tripDays.getElement(), day.getElement(), pos === `afterBegin` ? position.AFTERBEGIN : position.BEFOREEND);
-    render(day.getElement(), container.getElement(), position.BEFOREEND);
+  _renderDays(day, container, position) {
+    render(this._tripDays.getElement(), day.getElement(), position === `afterBegin` ? Position.AFTERBEGIN : Position.BEFOREEND);
+    render(day.getElement(), container.getElement(), Position.BEFOREEND);
   }
 
   // Общий метод рендеринга событий
   _renderEvents(events) {
     this._tripDays.getElement().innerHTML = ``;
+    const container = new EventsList();
+    this._renderDays(new Day(), container);
 
-    this._renderEventsInDays();
+    if (this._sortType === `default`) {
+      this._renderEventsInDays();
+    } else if (this._sortType === `time`) {
+      const sortedByTime = sortByTime(this._events);
+      sortedByTime.forEach((data) => this._renderEvent(data, container));
+    } else {
+      const sortedByPrice = sortByPrice(this._events);
+      sortedByPrice.forEach((data) => this._renderEvent(data, container));
+    }
 
     if (!events.length) {
       this._renderEventMessage();
@@ -137,7 +148,7 @@ export default class TripController {
 
   // Метод для обработки изменения данных в форме
   _onDataChange(newData, oldData, pointController) {
-    const index = this._events.findIndex((mock) => mock === oldData);
+    const index = this._events.findIndex((point) => point === oldData);
 
     if (newData === null) {
       if (oldData === null) { // если открыт новый ивент
@@ -156,9 +167,9 @@ export default class TripController {
     } else {
       if (oldData === null) { // создание нового ивента
         this._api.createPoint(newData)
-          .then((data) => {
+          .then((point) => {
             this._creatingEvent = null;
-            this._events = [data, ...this._events];
+            this._events = [point, ...this._events];
             this._renderEvents(this._events);
           })
           .catch(() => {
@@ -180,13 +191,13 @@ export default class TripController {
 
   // Метод обработки изменений вида события
   _onChangeView() {
-    this._subscriptions.forEach((it) => it());
+    this._subscriptions.forEach((item) => item());
   }
 
   // Метод отрисовки сообщения при отсутствии событий
   _renderEventMessage() {
     const message = new EventMessage();
-    render(this._container, message.getElement(), position.BEFOREEND);
+    render(this._container, message.getElement(), Position.BEFOREEND);
   }
 
   // Метод рендеринга одного события
@@ -207,15 +218,18 @@ export default class TripController {
     switch (evt.target.dataset.sortType) {
       case `time`:
         const sortedByTime = sortByTime(this._events);
+        this._sortType = `time`;
         sortedByTime.forEach((data) => this._renderEvent(data, container));
         break;
 
       case `price`:
         const sortedByPrice = sortByPrice(this._events);
+        this._sortType = `price`;
         sortedByPrice.forEach((data) => this._renderEvent(data, container));
         break;
 
       case `event`:
+        this._sortType = `default`;
         this._renderEvents(this._events);
         break;
     }
@@ -236,12 +250,12 @@ export default class TripController {
         break;
 
       case `Future`:
-        const filteredByFuture = this._events.slice().filter((item) => moment(item.dateFrom).format(`x`) > now);
+        const filteredByFuture = this._events.slice().filter((item) => item.dateFrom > now);
         filteredByFuture.forEach((data) => this._renderEvent(data, container));
         break;
 
       case `Past`:
-        const filteredByPast = this._events.slice().filter((item) => now > moment(item.dateFrom).format(`x`));
+        const filteredByPast = this._events.slice().filter((item) => now > item.dateFrom);
         filteredByPast.forEach((data) => this._renderEvent(data, container));
         break;
     }

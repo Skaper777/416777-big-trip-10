@@ -39,10 +39,10 @@ export default class Point extends AbstractComponent {
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
       ${
-  this._offers.map((arr) =>
-    `<li class="event__offer"><span class="event__offer-title">${arr.title}</span>
+  this._offers.map((offer) =>
+    `<li class="event__offer"><span class="event__offer-title">${offer.title}</span>
         &plus;
-        &euro;&nbsp;<span class="event__offer-price">${arr.price}</span>
+        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
       </li>`).slice(0, 3).join(``)}
 
       </ul>
