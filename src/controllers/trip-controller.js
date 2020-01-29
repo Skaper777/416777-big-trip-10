@@ -3,6 +3,7 @@ import TripDays from '../components/trip-days';
 import Day from '../components/day';
 import {render, Position, Mode, sortByPrice, sortByTime} from '../utils';
 import EventsList from '../components/events-list';
+import Statistic from '../components/statistic';
 import PointController from './point-controller';
 import EventMessage from '../components/event-message';
 import HeaderController from './header-controller';
@@ -45,6 +46,7 @@ export default class TripController {
       document.querySelectorAll(`.trip-sort__btn`).forEach((item) => item.addEventListener(`click`, (evt) => this._onSortLabelClick(evt)));
     }
 
+    this._initStatistic();
     this._header.init();
   }
 
@@ -106,6 +108,17 @@ export default class TripController {
     });
   }
 
+  // Метод отрисовки статистики
+  _initStatistic() {
+    const container = document.querySelector(`.statistics`);
+    const statisctics = new Statistic(this._events);
+
+    container.innerHTML = ``;
+    render(container, statisctics.getElement(), Position.BEFOREEND);
+
+    statisctics.init();
+  }
+
   // Метод рендеринга событий в соответвующий день
   _renderEventsInDays() {
     const dates = new Set(this._events.sort((a, b) => a.dateFrom - b.dateFrom).map((item) => moment(item.dateFrom).format(`YYYY MM DD`)));
@@ -131,16 +144,18 @@ export default class TripController {
     if (this._sortType === `default`) {
       this._renderEventsInDays();
     } else if (this._sortType === `time`) {
-      const sortedByTime = sortByTime(this._events);
+      const sortedByTime = sortByTime(events);
       sortedByTime.forEach((data) => this._renderEvent(data, container));
     } else {
-      const sortedByPrice = sortByPrice(this._events);
+      const sortedByPrice = sortByPrice(events);
       sortedByPrice.forEach((data) => this._renderEvent(data, container));
     }
 
     if (!events.length) {
       this._renderEventMessage();
     }
+
+    this._initStatistic();
 
     this._header = new HeaderController(events);
     this._header.init();

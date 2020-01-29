@@ -4,7 +4,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 /**
  * Класс шаблона статистики
  */
-export default class Stats extends AbstractComponent {
+export default class Statistic extends AbstractComponent {
   constructor(events) {
     super();
     this._events = events;
@@ -23,7 +23,10 @@ export default class Stats extends AbstractComponent {
 
   // Метод поулчения данных по стоимости
   _getMoneyData() {
-    const data = this._events.reduce((object, {type, price}) => {
+    const data = this._events.reduce((object, {
+      type,
+      price
+    }) => {
       const name = type;
       const prevProp = object[name] || 0;
       object[name] = prevProp + price;
@@ -36,7 +39,10 @@ export default class Stats extends AbstractComponent {
 
   // Метод получения данных по транспорту
   _getTransportData() {
-    const data = this._events.reduce((object, {type, typeOfType}) => {
+    const data = this._events.reduce((object, {
+      type,
+      typeOfType
+    }) => {
       if (typeOfType === `transport`) {
         const transport = type;
         const prevProp = object[transport] || 0;
@@ -53,7 +59,11 @@ export default class Stats extends AbstractComponent {
 
   // Метод получения данных по времени
   _getTimeData() {
-    const data = this._events.reduce((object, {destination, dateFrom, dateTo}) => {
+    const data = this._events.reduce((object, {
+      destination,
+      dateFrom,
+      dateTo
+    }) => {
       const dest = destination.name;
       const getDurationHours = () => {
         let time = dateTo - dateFrom;
@@ -130,21 +140,17 @@ export default class Stats extends AbstractComponent {
   }
 
   getTemplate() {
-    return `<section class="statistics visually-hidden">
+    return `<div>
     <h2 class="visually-hidden">Trip statistics</h2>
-
     <div class="statistics__item statistics__item--money">
       <canvas class="statistics__chart  statistics__chart--money" width="900"></canvas>
     </div>
-
     <div class="statistics__item statistics__item--transport">
       <canvas class="statistics__chart  statistics__chart--transport" width="900"></canvas>
     </div>
-
     <div class="statistics__item statistics__item--time-spend">
       <canvas class="statistics__chart  statistics__chart--time" width="900"></canvas>
     </div>
-  </section>
-    `;
+    </div>`;
   }
 }

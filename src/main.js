@@ -2,13 +2,14 @@ import Menu from './components/menu';
 import Filters from './components/filters';
 import {render, Position} from './utils';
 import TripController from './controllers/trip-controller';
-import Stats from './components/stats';
+import Statistic from './components/statistic';
+import StatisticBlock from './components/statistic-block';
 import API from './api.js';
 import Store from './store';
 /**
  * Точка входа приложения
  */
-const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const AUTHORIZATION = `Basic eo0w590ik29889b`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/big-trip`;
 
 const menuContainer = document.querySelector(`.trip-main__trip-controls`);
@@ -18,17 +19,19 @@ const addBtn = document.querySelector(`.trip-main__event-add-btn`);
 
 const store = new Store();
 const api = new API(END_POINT, AUTHORIZATION);
-const stats = new Stats();
+const statisticBlock = new StatisticBlock();
+const statistic = new Statistic();
 
 let tripController;
 
 // Метод отрисовки блока статистики
-const renderStats = () => {
-  render(mainContainer, stats.getElement(), Position.BEFOREEND);
+const _renderStatisctic = () => {
+  render(mainContainer, statisticBlock.getElement(), Position.BEFOREEND);
+  render(statisticBlock.getElement(), statistic.getElement(), Position.BEFOREEND);
 };
 
 // Метод отрисовки блока меню
-const renderMenu = () => {
+const _renderMenu = () => {
   const menu = new Menu();
 
   render(menuContainer, menu.getElement(), Position.AFTERBEGIN);
@@ -44,13 +47,13 @@ const renderMenu = () => {
       case `Table`:
         menu.getElement().querySelector(`a:first-of-type`).classList.add(`trip-tabs__btn--active`);
         menu.getElement().querySelector(`a:last-of-type`).classList.remove(`trip-tabs__btn--active`);
-        stats.getElement().classList.add(`visually-hidden`);
+        statisticBlock.getElement().classList.add(`visually-hidden`);
         tripController.show();
         break;
       case `Stats`:
         menu.getElement().querySelector(`a:first-of-type`).classList.remove(`trip-tabs__btn--active`);
         menu.getElement().querySelector(`a:last-of-type`).classList.add(`trip-tabs__btn--active`);
-        stats.getElement().classList.remove(`visually-hidden`);
+        statisticBlock.getElement().classList.remove(`visually-hidden`);
         tripController.hide();
         break;
     }
@@ -63,7 +66,7 @@ const addEvent = () => {
 };
 
 // Метод отрисовки блока фильтров
-const renderFilters = () => {
+const _renderFilters = () => {
   const filters = new Filters();
 
   render(menuContainer, filters.getElement(), Position.BEFOREEND);
@@ -79,12 +82,9 @@ Promise.all([api.getOffers(), api.getPoints(), api.getDestinations()]).then((res
   points.sort((a, b) => a.dateFrom - b.dateFrom);
   tripController = new TripController(tripContainer, points, store, api);
   tripController.init();
-
-  const statsGraph = new Stats(points);
-  statsGraph.init();
 });
 
 addBtn.addEventListener(`click`, addEvent);
-renderStats();
-renderMenu();
-renderFilters();
+_renderStatisctic();
+_renderMenu();
+_renderFilters();

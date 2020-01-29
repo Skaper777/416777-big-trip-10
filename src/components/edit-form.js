@@ -20,8 +20,8 @@ export default class EditEvent extends AbstractComponent {
     this._isFavorite = isFavorite;
     this._currentOffers = this._getCurrentOffers();
 
-    this._onDestHandler();
-    this._onTypeHandler();
+    this._changeDestination();
+    this._changeType();
   }
 
   // метод изменения текста кнопки сохраниения
@@ -40,8 +40,21 @@ export default class EditEvent extends AbstractComponent {
     .map((it) => it);
   }
 
+  // метод проверки отмеченных офферов
+  _checkForChecked(offer) {
+    let checked = false;
+
+    this._offers.forEach((element) => {
+      if (offer.name === element.title) {
+        checked = true;
+      }
+    });
+
+    return checked ? `checked` : ``;
+  }
+
   // метод ререндеринга офферов от типа
-  _onTypeHandler() {
+  _changeType() {
     const checkboxes = this.getElement().querySelectorAll(`.event__type-input`);
 
     for (let i = 0; i < checkboxes.length; i++) {
@@ -71,7 +84,7 @@ export default class EditEvent extends AbstractComponent {
   }
 
   // метод ререндеринга описания и фото от пункта назначения
-  _onDestHandler() {
+  _changeDestination() {
     const el = this.getElement().querySelector(`.event__input--destination`);
 
     el.addEventListener(`change`, (e) => {
@@ -216,7 +229,7 @@ export default class EditEvent extends AbstractComponent {
         <div class="event__available-offers">
         ${this._currentOffers.map((item) =>
     `<div class="event__offer-selector">
-            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.name}-1" type="checkbox" name="${item.name}" ${item.check ? `checked` : ``}>
+            <input class="event__offer-checkbox  visually-hidden" id="event-offer-${item.name}-1" type="checkbox" name="${item.name}" ${this._checkForChecked(item)}>
             <label class="event__offer-label" for="event-offer-${item.name}-1">
               <span class="event__offer-title">${item.name}</span>
               &plus;
@@ -232,7 +245,7 @@ export default class EditEvent extends AbstractComponent {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${this._photos[0].src ? this._photos.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``) : ``}
+            ${this._photos[0].src ? this._photos.map((item) => `<img class="event__photo" src="${item.src}" alt="Event photo">`).join(``) : ``}
           </div>
         </div>
       </section>
