@@ -36,16 +36,16 @@ export default class TripInfo extends AbstractComponent {
   }
 
   // Метод форматирования информации
-  _formatInfo(array) {
-    const triggerArrayLength = 2;
-    return array.length > triggerArrayLength ? `${array[0]} — ... — ${array[array.length - 1]}` : array.join(` — `);
+  _formatInfo(info) {
+    const INFO_LENGTH = 2;
+    return info.length > INFO_LENGTH ? `${info[0]} — ... — ${info[info.length - 1]}` : info.join(` — `);
   }
 
   // Метод получения списка городов
-  _getTripCities(array) {
+  _getTripCities(elements) {
     let cities = [];
 
-    for (let element of array) {
+    for (let element of elements) {
       const city = element.destination.name;
       cities.push(city);
     }
