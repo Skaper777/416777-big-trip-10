@@ -22,6 +22,7 @@ export default class PointController {
   setDefaultView() {
     if (this._container.getElement().contains(this._editForm.getElement())) {
       this._container.getElement().replaceChild(this._point.getElement(), this._editForm.getElement());
+      document.removeEventListener(`keydown`, this.onEscKeyDown);
     }
   }
 
@@ -115,8 +116,7 @@ export default class PointController {
 
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
-        this._container.getElement().replaceChild(this._point.getElement(), this._editForm.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
+        this._onChangeView();
       }
     };
 
