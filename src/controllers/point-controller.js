@@ -19,7 +19,7 @@ export default class PointController {
     this._flatpicrTo = null;
 
     this.init(mode);
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this.onEscKeyDown = this.onEscKeyDown.bind(this);
     this._destroyFlatpicr = this._destroyFlatpicr.bind(this);
   }
 
@@ -30,7 +30,7 @@ export default class PointController {
       this._destroyFlatpicr();
     }
 
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this.onEscKeyDown);
   }
 
   // Метод блокировки полей формы
@@ -94,7 +94,7 @@ export default class PointController {
   }
 
   // Метод закрытия по кнопке ESC
-  _onEscKeyDown(evt) {
+  onEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       this._onChangeView();
     }
@@ -135,6 +135,7 @@ export default class PointController {
     if (mode === Mode.ADDING) {
       currentView = this._editForm;
       renderPosition = Position.AFTERBEGIN;
+      this._createFlatpicr();
     }
 
     this._point.getElement()
@@ -142,7 +143,7 @@ export default class PointController {
       .addEventListener(`click`, (evt) => {
         evt.preventDefault();
         this._onChangeView();
-        document.addEventListener(`keydown`, this._onEscKeyDown);
+        document.addEventListener(`keydown`, this.onEscKeyDown);
         this._container.getElement().replaceChild(this._editForm.getElement(), this._point.getElement());
         this._createFlatpicr();
       });
@@ -199,7 +200,7 @@ export default class PointController {
           this.disableForm(`Saving...`);
           this._onDataChange(entry, mode === Mode.DEFAULT ? this._pointData : null, this);
 
-          document.removeEventListener(`keydown`, this._onEscKeyDown);
+          document.removeEventListener(`keydown`, this.onEscKeyDown);
         }
       });
 
@@ -214,7 +215,7 @@ export default class PointController {
         }
 
         this.disableForm(`Deleting...`);
-        document.removeEventListener(`keydown`, this._onEscKeyDown);
+        document.removeEventListener(`keydown`, this.onEscKeyDown);
       });
 
     render(this._container.getElement(), currentView.getElement(), renderPosition);

@@ -89,7 +89,7 @@ export default class TripController {
 
     this._renderDays(new Day(null, 0), container, `afterBegin`);
     this._creatingEvent = new PointController(container, defaultEvent, this._store, PointControllerMode.ADDING, this._onDataChange, this._onChangeView);
-
+    document.addEventListener(`keydown`, this._creatingEvent.onEscKeyDown);
     this._subscriptions.push(this._creatingEvent.setDefaultView.bind(this._creatingEvent));
   }
 

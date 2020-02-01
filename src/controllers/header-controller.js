@@ -21,10 +21,6 @@ export default class HeaderController {
 
   // Метод инициализации
   init() {
-    const events = document.querySelectorAll(`.trip-events__item`);
-
-    if (events.length > 0) {
-      this._renderInfo();
-    }
+    this._renderInfo();
   }
 }

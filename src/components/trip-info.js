@@ -11,9 +11,9 @@ export default class TripInfo extends AbstractComponent {
 
   getTemplate() {
     return `<div class="trip-info__main">
-      <h1 class="trip-info__title">${this._getTripCities(this._events)}</h1>
+      <h1 class="trip-info__title">${this._events.length > 0 ? this._getTripCities(this._events) : ``}</h1>
 
-      <p class="trip-info__dates">${this._getTripDate()}</p>
+      <p class="trip-info__dates">${this._events.length > 0 ? this._getTripDate() : ``}</p>
     </div>
     `;
   }

@@ -12,7 +12,7 @@ export default class TotalPrice extends AbstractComponent {
 
   getTemplate() {
     return `<p class="trip-info__cost">
-              Total: &euro;&nbsp;<span class="trip-info__cost-value">${this._price}</span>
+              ${this._events.length ? `Total: &euro;&nbsp;` : ``}<span class="trip-info__cost-value">${this._events.length ? this._price : ``}</span>
             </p>`;
   }
 }
