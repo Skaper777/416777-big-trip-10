@@ -5,7 +5,7 @@ import AbstractComponent from './abstract';
 export default class Menu extends AbstractComponent {
   constructor() {
     super();
-    this._list = [{
+    this._menuItems = [{
       name: `Table`,
       active: true
     },
@@ -18,7 +18,7 @@ export default class Menu extends AbstractComponent {
 
   getTemplate() {
     return `<nav class="trip-controls__trip-tabs  trip-tabs">
-    ${this._list.map((item) => `
+    ${this._menuItems.map((item) => `
     <a class="trip-tabs__btn ${item.active ? `trip-tabs__btn--active` : ``}" href="#">${item.name}</a>
     `).join(``)}
     </nav>

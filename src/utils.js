@@ -24,8 +24,8 @@ export const getDuration = (from, to) => {
   const hours = moment(to).diff(moment(from), `hours`) - days * 24;
   const minutes = moment(to).diff(moment(from), `minutes`) - days * 60 * 24 - hours * 60;
 
-  const formattedInt = `${days > 0 ? getInterval(days, `D`) : ``} ${hours > 0 ? getInterval(hours, `H`) : ``} ${getInterval(minutes, `M`)}`;
-  return formattedInt;
+  const formattedInterval = `${days > 0 ? getInterval(days, `D`) : ``} ${hours > 0 ? getInterval(hours, `H`) : ``} ${getInterval(minutes, `M`)}`;
+  return formattedInterval;
 };
 
 // Метод получения итоговой цены
@@ -33,11 +33,11 @@ export const renderTotalPrice = (events) => {
   let sumEventsPrice = 0;
   let sumOffers = 0;
 
-  for (let i = 0; i < events.length; i++) {
-    const eventPrice = events[i].price;
+  for (const item of events) {
+    const eventPrice = item.price;
     sumEventsPrice += eventPrice;
 
-    events[i].offers.forEach((offer) => {
+    item.offers.forEach((offer) => {
       const offersPrice = offer.price;
       sumOffers += offersPrice;
     });

@@ -10,11 +10,11 @@ const Method = {
 };
 
 // Метод проверки статуса ответа сервера
-const checkStatus = (res) => {
-  if (res.status >= 200 && res.status < 300) {
-    return res;
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
   } else {
-    throw new Error(`${res.status}: ${res.statusText}`);
+    throw new Error(`${response.status}: ${response.statusText}`);
   }
 };
 
@@ -87,8 +87,8 @@ export default class API {
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})
       .then(checkStatus)
-      .catch((err) => {
-        throw err;
+      .catch((error) => {
+        throw error;
       });
   }
 }

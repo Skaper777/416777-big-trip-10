@@ -2,12 +2,12 @@
  * Класс модели офферов
  */
 export default class ModelOffer {
-  constructor(data) {
-    this.type = data.type;
-    this.offers = data.offers.map((offer) => {
+  constructor(offer) {
+    this.type = offer.type;
+    this.offers = offer.offers.map((item) => {
       return {
-        name: offer.title,
-        price: offer.price
+        name: item.title,
+        price: item.price
       };
     });
   }

@@ -80,8 +80,8 @@ export default class Statistic extends AbstractComponent {
   }
 
   // Метод получения настроек плагина
-  _getConfig(data, title, formatIcon) {
-    const keys = Object.keys(data);
+  _getConfig(configData, title, formatIcon) {
+    const keys = Object.keys(configData);
 
     return {
       plugins: [ChartDataLabels],
@@ -89,7 +89,7 @@ export default class Statistic extends AbstractComponent {
       data: {
         labels: keys,
         datasets: [{
-          data: keys.map((key) => data[key]),
+          data: keys.map((key) => configData[key]),
           backgroundColor: `white`,
           borderColor: `grey`,
           borderWidth: 0,

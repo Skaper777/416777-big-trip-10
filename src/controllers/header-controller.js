@@ -5,9 +5,9 @@ import {render, Position} from '../utils';
  * Класс контроллера шапки сайта
  */
 export default class HeaderController {
-  constructor(data) {
-    this._price = new TotalPrice(data);
-    this._tripInfo = new TripInfo(data);
+  constructor(headerData) {
+    this._price = new TotalPrice(headerData);
+    this._tripInfo = new TripInfo(headerData);
   }
 
   // Метод отрисовки информации о поездке

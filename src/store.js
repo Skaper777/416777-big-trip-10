@@ -14,16 +14,16 @@ export default class Store {
 
   // получение списка офферов
   getOffers() {
-    return this._offers.map((el) => [el.type, el.offers]);
+    return this._offers.map((element) => [element.type, element.offers]);
   }
 
   // установка списка городов
-  setDestinations(data) {
-    this._destinations = data;
+  setDestinations(destinations) {
+    this._destinations = destinations;
   }
 
   // установка списка городов
-  setOffers(data) {
-    this._offers = data;
+  setOffers(offers) {
+    this._offers = offers;
   }
 }

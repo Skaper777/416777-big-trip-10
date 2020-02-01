@@ -145,10 +145,10 @@ export default class TripController {
       this._renderEventsInDays();
     } else if (this._sortType === `time`) {
       const sortedByTime = sortByTime(events);
-      sortedByTime.forEach((data) => this._renderEvent(data, container));
+      sortedByTime.forEach((pointData) => this._renderEvent(pointData, container));
     } else {
       const sortedByPrice = sortByPrice(events);
-      sortedByPrice.forEach((data) => this._renderEvent(data, container));
+      sortedByPrice.forEach((pointData) => this._renderEvent(pointData, container));
     }
 
     if (!events.length) {
@@ -216,8 +216,8 @@ export default class TripController {
   }
 
   // Метод рендеринга одного события
-  _renderEvent(data, container) {
-    const pointController = new PointController(container, data, this._store, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
+  _renderEvent(eventData, container) {
+    const pointController = new PointController(container, eventData, this._store, PointControllerMode.DEFAULT, this._onDataChange, this._onChangeView);
 
     this._subscriptions.push(pointController.setDefaultView.bind(pointController));
   }
@@ -234,13 +234,13 @@ export default class TripController {
       case `time`:
         const sortedByTime = sortByTime(this._events);
         this._sortType = `time`;
-        sortedByTime.forEach((data) => this._renderEvent(data, container));
+        sortedByTime.forEach((point) => this._renderEvent(point, container));
         break;
 
       case `price`:
         const sortedByPrice = sortByPrice(this._events);
         this._sortType = `price`;
-        sortedByPrice.forEach((data) => this._renderEvent(data, container));
+        sortedByPrice.forEach((point) => this._renderEvent(point, container));
         break;
 
       case `event`:
@@ -266,12 +266,12 @@ export default class TripController {
 
       case `Future`:
         const filteredByFuture = this._events.slice().filter((item) => item.dateFrom > now);
-        filteredByFuture.forEach((data) => this._renderEvent(data, container));
+        filteredByFuture.forEach((point) => this._renderEvent(point, container));
         break;
 
       case `Past`:
         const filteredByPast = this._events.slice().filter((item) => now > item.dateFrom);
-        filteredByPast.forEach((data) => this._renderEvent(data, container));
+        filteredByPast.forEach((point) => this._renderEvent(point, container));
         break;
     }
   }

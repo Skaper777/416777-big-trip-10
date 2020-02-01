@@ -15,7 +15,7 @@ export default class EditEvent extends AbstractComponent {
     this._offers = offers;
     this._description = destination.description;
     this._photos = destination.pictures;
-    this._offersList = store.getOffers();
+    this._allOffers = store.getOffers();
     this._destinations = store.getDestinations();
     this._isFavorite = isFavorite;
     this._currentOffers = this._getCurrentOffers();
@@ -36,8 +36,8 @@ export default class EditEvent extends AbstractComponent {
 
   // метод получения актуальных офферов
   _getCurrentOffers() {
-    return this._offersList.find((it) => it[0] === this._type)[1]
-    .map((it) => it);
+    return this._allOffers.find((item) => item[0] === this._type)[1]
+    .map((item) => item);
   }
 
   // метод проверки отмеченных офферов
@@ -53,19 +53,30 @@ export default class EditEvent extends AbstractComponent {
     return checked ? `checked` : ``;
   }
 
+  // Метод сравнения цены, чтобы была одинаковая
+  _checkOffersPrices(offer) {
+    this._offers.forEach((element) => {
+      if (offer.name === element.title) {
+        offer.price = element.price;
+      }
+    });
+
+    return `${offer.price}`;
+  }
+
   // метод ререндеринга офферов от типа
   _changeType() {
     const checkboxes = this.getElement().querySelectorAll(`.event__type-input`);
 
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (this._type === checkboxes[i].value) {
-        checkboxes[i].checked = true;
+    for (const checkboxesItem of checkboxes) {
+      if (this._type === checkboxesItem.value) {
+        checkboxesItem.checked = true;
       }
 
-      checkboxes[i].addEventListener(`click`, (evt) => {
-        if (evt.target === checkboxes[i]) {
-          checkboxes[i].checked = true;
-          this._type = checkboxes[i].value;
+      checkboxesItem.addEventListener(`click`, (evt) => {
+        if (evt.target === checkboxesItem) {
+          checkboxesItem.checked = true;
+          this._type = checkboxesItem.value;
           this.getElement().querySelector(`.event__type-icon`).src = `img/icons/${this._type}.png`;
           this.getElement().querySelector(`.event__type-output`).textContent = `${getTitle(this._type)}`;
 
@@ -85,19 +96,19 @@ export default class EditEvent extends AbstractComponent {
 
   // метод ререндеринга описания и фото от пункта назначения
   _changeDestination() {
-    const el = this.getElement().querySelector(`.event__input--destination`);
+    const element = this.getElement().querySelector(`.event__input--destination`);
 
-    el.addEventListener(`change`, (e) => {
-      let targ = this._destinations.find((it) => it.name === e.target.value);
+    element.addEventListener(`change`, (e) => {
+      const target = this._destinations.find((item) => item.name === e.target.value);
 
-      if (!targ) {
+      if (!target) {
         e.preventDefault();
         this.getElement().style.position = `relative`;
         this.getElement().querySelector(`.wrong-destination`).style = `display: block; color: red; position: absolute; top: 40px`;
       } else {
         this.getElement().querySelector(`.wrong-destination`).style = `display: none`;
-        this.getElement().querySelector(`.event__destination-description`).textContent = targ.description;
-        this.getElement().querySelector(`.event__photos-tape`).innerHTML = targ.photo.map((it) => `<img class="event__photo" src="${it.src}" alt="Event photo">`).join(``);
+        this.getElement().querySelector(`.event__destination-description`).textContent = target.description;
+        this.getElement().querySelector(`.event__photos-tape`).innerHTML = target.photo.map((item) => `<img class="event__photo" src="${item.src}" alt="Event photo">`).join(``);
       }
     });
   }
@@ -233,7 +244,7 @@ export default class EditEvent extends AbstractComponent {
             <label class="event__offer-label" for="event-offer-${item.name}-1">
               <span class="event__offer-title">${item.name}</span>
               &plus;
-              &euro;&nbsp;<span class="event__offer-price">${item.price}</span>
+              &euro;&nbsp;<span class="event__offer-price">${this._checkOffersPrices(item)}</span>
             </label>
           </div>`).join(``)}
         </div>

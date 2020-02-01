@@ -2,16 +2,16 @@
  * Класс модели событий
  */
 export default class ModelPoint {
-  constructor(data) {
-    this.id = data.id;
-    this.type = data.type;
+  constructor(point) {
+    this.id = point.id;
+    this.type = point.type;
     this.typeOfType = ``;
-    this.destination = data.destination;
-    this.dateFrom = new Date(data.date_from);
-    this.dateTo = new Date(data.date_to);
-    this.price = data.base_price;
-    this.offers = data.offers;
-    this.isFavorite = data.is_favorite;
+    this.destination = point.destination;
+    this.dateFrom = new Date(point.date_from);
+    this.dateTo = new Date(point.date_to);
+    this.price = point.base_price;
+    this.offers = point.offers;
+    this.isFavorite = point.is_favorite;
 
     this._getTransport();
   }

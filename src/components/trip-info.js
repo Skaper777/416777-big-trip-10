@@ -20,7 +20,7 @@ export default class TripInfo extends AbstractComponent {
 
   // Метод получения дат поездки
   _getTripDate() {
-    let days = [];
+    const days = [];
     const sortEvents = sortByDate(this._events);
     const firstDate = sortEvents[0].dateFrom;
     const lastDate = sortEvents[sortEvents.length - 1].dateTo;
@@ -43,15 +43,15 @@ export default class TripInfo extends AbstractComponent {
 
   // Метод получения списка городов
   _getTripCities(elements) {
-    let cities = [];
+    const cities = [];
 
-    for (let element of elements) {
+    elements.forEach((element) => {
       const city = element.destination.name;
       cities.push(city);
-    }
+    });
 
-    const stringList = this._formatInfo(cities);
+    const formatCities = this._formatInfo(cities);
 
-    return stringList;
+    return formatCities;
   }
 }

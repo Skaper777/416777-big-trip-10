@@ -6,24 +6,31 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/light.css';
 
 export default class PointController {
-  constructor(container, data, store, mode, onDataChange, onChangeView) {
+  constructor(container, pointData, store, mode, onDataChange, onChangeView) {
     this._container = container;
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
-    this._data = data;
+    this._pointData = pointData;
     this._store = store;
-    this._point = new Point(data);
-    this._editForm = new EditEvent(data, store);
+    this._point = new Point(pointData);
+    this._editForm = new EditEvent(pointData, store);
+
+    this._flatpicrFrom = null;
+    this._flatpicrTo = null;
 
     this.init(mode);
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._destroyFlatpicr = this._destroyFlatpicr.bind(this);
   }
 
   // Метод замены типа отображения события
   setDefaultView() {
     if (this._container.getElement().contains(this._editForm.getElement())) {
       this._container.getElement().replaceChild(this._point.getElement(), this._editForm.getElement());
-      document.removeEventListener(`keydown`, this.onEscKeyDown);
+      this._destroyFlatpicr();
     }
+
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   // Метод блокировки полей формы
@@ -86,6 +93,40 @@ export default class PointController {
     }, 1500);
   }
 
+  // Метод закрытия по кнопке ESC
+  _onEscKeyDown(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      this._onChangeView();
+    }
+  }
+
+  // Метод создания flatpickr
+  _createFlatpicr() {
+    const times = this._editForm.getElement().querySelectorAll(`.event__input--time`);
+
+    this._flatpicrFrom = flatpickr(times[0], {
+      altInput: true,
+      allowInput: true,
+      defaultDate: this._pointData.dateFrom,
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+    });
+
+    this._flatpicrTo = flatpickr(times[1], {
+      altInput: true,
+      allowInput: true,
+      defaultDate: this._pointData.dateTo,
+      enableTime: true,
+      altFormat: `d/m/y H:i`,
+    });
+  }
+
+  // Метод удаления flatpickr
+  _destroyFlatpicr() {
+    this._flatpicrFrom.destroy();
+    this._flatpicrTo.destroy();
+  }
+
   // Метод инициализации
   init(mode) {
     let currentView = this._point;
@@ -96,44 +137,21 @@ export default class PointController {
       renderPosition = Position.AFTERBEGIN;
     }
 
-    const times = this._editForm.getElement().querySelectorAll(`.event__input--time`);
-
-    flatpickr(times[0], {
-      altInput: true,
-      allowInput: true,
-      defaultDate: this._data.dateFrom,
-      enableTime: true,
-      altFormat: `d/m/y H:i`,
-    });
-
-    flatpickr(times[1], {
-      altInput: true,
-      allowInput: true,
-      defaultDate: this._data.dateTo,
-      enableTime: true,
-      altFormat: `d/m/y H:i`,
-    });
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        this._onChangeView();
-      }
-    };
-
     this._point.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, (evt) => {
         evt.preventDefault();
         this._onChangeView();
+        document.addEventListener(`keydown`, this._onEscKeyDown);
         this._container.getElement().replaceChild(this._editForm.getElement(), this._point.getElement());
-        document.addEventListener(`keydown`, onEscKeyDown);
+        this._createFlatpicr();
       });
 
     this._editForm.getElement()
       .querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, () => {
         this._container.getElement().replaceChild(this._point.getElement(), this._editForm.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
+        this._destroyFlatpicr();
       });
 
     // Обработчик отправки формы
@@ -145,15 +163,15 @@ export default class PointController {
         const form = this._editForm.getElement();
         const formData = new FormData(form.querySelector(`.event--edit`));
         const offersDom = Array.from(form.querySelectorAll(`.event__offer-selector`));
-        const destList = Array.from(form.querySelectorAll(`.datalist-option`)).map((it) => it.value);
+        const destList = Array.from(form.querySelectorAll(`.datalist-option`)).map((item) => item.value);
 
         const entry = {
           'type': formData.get(`event-type`),
           'destination': {
             name: formData.get(`event-destination`),
             description: form.querySelector(`.event__destination-description`).textContent,
-            pictures: [...form.querySelectorAll(`.event__photo`)].map((el) => {
-              return {src: el.src, description: el.alt};
+            pictures: [...form.querySelectorAll(`.event__photo`)].map((element) => {
+              return {src: element.src, description: element.alt};
             })
           },
           'date_from': formData.get(`event-start-time`),
@@ -179,9 +197,9 @@ export default class PointController {
         } else {
           form.style = `border: none`;
           this.disableForm(`Saving...`);
-          this._onDataChange(entry, mode === Mode.DEFAULT ? this._data : null, this);
+          this._onDataChange(entry, mode === Mode.DEFAULT ? this._pointData : null, this);
 
-          document.removeEventListener(`keydown`, onEscKeyDown);
+          document.removeEventListener(`keydown`, this._onEscKeyDown);
         }
       });
 
@@ -190,13 +208,13 @@ export default class PointController {
       .addEventListener(`click`, (e) => {
         if (mode === Mode.DEFAULT) {
           e.preventDefault();
-          this._onDataChange(null, this._data);
+          this._onDataChange(null, this._pointData);
         } else {
           this._onDataChange(null, null);
         }
 
         this.disableForm(`Deleting...`);
-        document.removeEventListener(`keydown`, onEscKeyDown);
+        document.removeEventListener(`keydown`, this._onEscKeyDown);
       });
 
     render(this._container.getElement(), currentView.getElement(), renderPosition);
