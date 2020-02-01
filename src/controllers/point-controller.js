@@ -45,7 +45,7 @@ export default class PointController {
   }
 
   // Метод разблокировки формы
-  unlockForm() {
+  _unlockForm() {
     this._editForm.getElement().querySelectorAll(`form input, form select, form button, form checkbox`).forEach((item) => item.removeAttribute(`disabled`, `disabled`));
     this._editForm.setSaveBtnText(`Save`);
     this._editForm.setDeleteBtnTxt(`Delete`);
@@ -53,7 +53,7 @@ export default class PointController {
 
   // Метод для обработки ошибок
   errorFormHandler() {
-    this.unlockForm();
+    this._unlockForm();
     this._editForm.getElement().style = `border-radius: 5px; border: 1px solid red`;
     this._editForm.getElement().classList.add(`shake`);
   }
